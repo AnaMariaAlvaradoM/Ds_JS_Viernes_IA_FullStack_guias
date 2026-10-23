@@ -1,0 +1,315 @@
+<!doctype html>
+<!--
+  PORTAL · JavaScript AI Fullstack Expert Developer · Dev Senior · viernes
+  Plantilla universal de portal de Ana Alvarado (v2, visor con barra fija).
+
+  CÓMO PUBLICAR UNA GUÍA (SPA)
+  1. Copia el archivo .html de la SPA en docs/ModuloN/ (por ejemplo docs/Modulo1/).
+  2. Busca la clase abajo y pon la ruta en su href:
+       href=""  →  href="docs/Modulo1/M1-C1-Setup-Profesional.html"
+     Mientras el href esté vacío, la clase aparece como "Pronto" y no se abre.
+  3. Material extra de una clase: copia el bloque <a class="clase">, deja el mismo número
+     y agrégale data-extra.
+  4. Cuando empiece un módulo nuevo: en su <details> quita la clase "proximo",
+     agrega open y cambia la etiqueta a <span class="mod-badge activo">Activo</span>.
+     (Las guías de un módulo "proximo" no cuentan como "Más reciente".)
+
+  Anterior / Siguiente del visor siguen el orden de esta lista.
+  El enlace de una guía abierta queda así: index.html?guia=docs/Modulo1/archivo.html
+
+  OPCIONAL · botón de regreso cuando una guía se abre SOLA:
+    docs/Modulo1/guia.html → <script src="../../portal.js" defer></script> antes de </body>
+-->
+<html lang="es" data-empresa="dev-senior">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JavaScript AI Fullstack · Ana Alvarado</title>
+  <meta name="author" content="Ana Alvarado">
+  <meta name="description" content="Biblioteca de guías y materiales del curso JavaScript AI Fullstack Expert Developer.">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <link rel="stylesheet" href="portal.css">
+</head>
+
+<body>
+  <a class="skip-link" href="#guias">Saltar a las guías</a>
+
+  <!-- ============ BARRA FIJA · visible en la biblioteca y en cada guía ============ -->
+  <header class="portal-topbar" id="barraPortal">
+    <a class="portal-brand" href="./index.html" id="irInicio" aria-label="Inicio del portal">
+      <span class="portal-brand-mark" aria-hidden="true">A</span>
+      <span class="portal-brand-copy">
+        <strong>Ana Alvarado</strong>
+        <small>Dev Senior · JavaScript AI Fullstack</small>
+      </span>
+    </a>
+
+    <!-- Solo visible con una guía abierta (lo llena portal.js) -->
+    <nav class="visor-nav" id="visorNav" aria-label="Navegación de la guía" hidden>
+      <a class="visor-inicio" href="./index.html" id="volverBiblioteca">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
+        <span>Todas las guías</span>
+      </a>
+      <div class="visor-ubicacion" aria-live="polite">
+        <span class="visor-modulo" id="visorModulo"></span>
+        <strong class="visor-clase" id="visorClase"></strong>
+      </div>
+      <div class="visor-pasos">
+        <button class="ctrl-btn" id="guiaAnterior" type="button" aria-label="Guía anterior" title="Guía anterior">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="ctrl-btn" id="guiaSiguiente" type="button" aria-label="Guía siguiente" title="Guía siguiente">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <a class="ctrl-btn" id="abrirSola" href="#" target="_blank" rel="noopener" aria-label="Abrir la guía sola en otra pestaña" title="Abrir sola (para imprimir o pantalla completa)">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+        </a>
+      </div>
+    </nav>
+
+    <button class="ctrl-btn" id="temaBtn" type="button" aria-label="Activar tema oscuro" title="Activar tema oscuro">☾</button>
+  </header>
+
+  <!-- ============ VISOR · aquí se abre cada guía ============ -->
+  <section class="visor" id="visor" aria-label="Guía abierta" hidden>
+    <iframe class="visor-frame" id="visorFrame" title="Guía de clase" allow="fullscreen; clipboard-write"></iframe>
+  </section>
+
+  <main class="wrap" id="biblioteca">
+    <p class="eyebrow">DEV SENIOR · JAVASCRIPT AI FULLSTACK</p>
+    <h1>JavaScript AI Fullstack</h1>
+    <p class="lead">Biblioteca de clases del programa: backend con Node.js, frontend con React, un SaaS en producción e inteligencia artificial integrada, organizada por módulo.</p>
+
+    <section class="library-head" id="guias" aria-labelledby="tituloBiblioteca">
+      <div class="library-heading">
+        <span class="section-label">Biblioteca</span>
+        <h2 id="tituloBiblioteca">Clases por módulo</h2>
+        <p class="library-meta"><strong data-module-count>0</strong> módulos · <strong data-resource-count>0</strong> guías disponibles</p>
+      </div>
+
+      <div class="library-actions">
+        <button class="text-btn" id="mostrarBusqueda" type="button" aria-expanded="false" aria-controls="panelBusqueda" aria-label="Buscar una guía">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+          <span data-search-label>Buscar</span>
+        </button>
+        <button class="text-btn" id="expandirModulos" type="button" aria-expanded="false">Expandir</button>
+      </div>
+
+      <div class="search-panel" id="panelBusqueda" hidden>
+        <label class="search-field">
+          <span class="sr-only">Buscar por clase, tema o tecnología</span>
+          <input class="search-input" id="buscarGuia" type="search" autocomplete="off" placeholder="Escribe una clase, tema o tecnología…">
+          <button class="search-clear" id="limpiarBusqueda" type="button" aria-label="Limpiar búsqueda" title="Limpiar búsqueda" hidden>×</button>
+        </label>
+      </div>
+      <p class="sr-only" id="estadoResultados" role="status" aria-live="polite"></p>
+    </section>
+
+    <div class="modulos" id="lista-guias" aria-label="Módulos y guías">
+
+      <!-- ============ MÓDULO 1 ============ -->
+      <details class="modulo" open>
+        <summary>
+          <span class="mod-punto"></span>
+          <span class="mod-info">
+            <span class="mod-titulo">Módulo 1</span>
+            <span class="mod-meta">Fundamentos + Backend + AI Foundations (Node.js)</span>
+          </span>
+          <span class="mod-badge activo">Activo</span>
+          <span class="mod-chevron">▶</span>
+        </summary>
+        <div class="clases">
+          <a class="clase" href="docs/Modulo1/Clase1/index.html">
+            <span class="num">01</span>
+            <span class="clase-info">
+              <span class="clase-titulo">Clase 1</span>
+              <span class="clase-temas">Setup profesional + mentalidad AI Engineer · Node.js, Express, Cursor, Git y GitHub</span>
+            </span>
+            <span class="flecha">&rarr;</span>
+          </a>
+          <a class="clase" href="">
+            <span class="num">02</span>
+            <span class="clase-info">
+              <span class="clase-titulo">Clase 2</span>
+              <span class="clase-temas">APIs REST + arquitectura backend · Rutas, controladores y servicios · primer CRUD</span>
+            </span>
+            <span class="flecha">&rarr;</span>
+          </a>
+          <a class="clase" href="">
+            <span class="num">03</span>
+            <span class="clase-info">
+              <span class="clase-titulo">Clase 3</span>
+              <span class="clase-temas">Base de datos + CRUD real · PostgreSQL, Prisma, validaciones y errores</span>
+            </span>
+            <span class="flecha">&rarr;</span>
+          </a>
+          <a class="clase" href="">
+            <span class="num">04</span>
+            <span class="clase-info">
+              <span class="clase-titulo">Clase 4</span>
+              <span class="clase-temas">Backend + AI Integration · OpenAI API, prompts y endpoint con IA</span>
+            </span>
+            <span class="flecha">&rarr;</span>
+          </a>
+        </div>
+      </details>
+
+      <!-- ============ MÓDULO 2 ============ -->
+      <details class="modulo proximo">
+        <summary>
+          <span class="mod-punto"></span>
+          <span class="mod-info">
+            <span class="mod-titulo">Módulo 2</span>
+            <span class="mod-meta">Frontend Profesional + AI Integration (React)</span>
+          </span>
+          <span class="mod-badge">Pronto</span>
+          <span class="mod-chevron">▶</span>
+        </summary>
+        <div class="clases">
+          <a class="clase" href="">
+            <span class="num">01</span>
+            <span class="clase-info">
+              <span class="clase-titulo">Clase 1</span>
+              <span class="clase-temas">Setup React + arquitectura moderna · Vite, componentes, JSX y props</span>
+            </span>
+            <span class="flecha">&rarr;</span>
+          </a>
+          <a class="clase" href="">
+            <span class="num">02</span>
+            <span class="clase-info">
+              <span class="clase-titulo">Clase 2</span>
+              <span class="clase-temas">Consumo de API + integración backend · React Router, fetch y datos dinámicos</span>
+            </span>
+            <span class="flecha">&rarr;</span>
+          </a>
+          <a class="clase" href="">
+            <span class="num">03</span>
+            <span class="clase-info">
+              <span class="clase-titulo">Clase 3</span>
+              <span class="clase-temas">Autenticación + estado + formularios · Login, JWT, rutas protegidas y contexto</span>
+            </span>
+            <span class="flecha">&rarr;</span>
+          </a>
+          <a class="clase" href="">
+            <span class="num">04</span>
+            <span class="clase-info">
+              <span class="clase-titulo">Clase 4</span>
+              <span class="clase-temas">Frontend inteligente con IA · Chatbot en React y UX con IA</span>
+            </span>
+            <span class="flecha">&rarr;</span>
+          </a>
+        </div>
+      </details>
+
+      <!-- ============ MÓDULO 3 ============ -->
+      <details class="modulo proximo">
+        <summary>
+          <span class="mod-punto"></span>
+          <span class="mod-info">
+            <span class="mod-titulo">Módulo 3</span>
+            <span class="mod-meta">SaaS Real + Producción + Monetización (Fullstack + AI)</span>
+          </span>
+          <span class="mod-badge">Pronto</span>
+          <span class="mod-chevron">▶</span>
+        </summary>
+        <div class="clases">
+          <a class="clase" href="">
+            <span class="num">01</span>
+            <span class="clase-info">
+              <span class="clase-titulo">Clase 1</span>
+              <span class="clase-temas">Integración Fullstack + arquitectura SaaS · Flujo completo, sesiones y estructura del SaaS</span>
+            </span>
+            <span class="flecha">&rarr;</span>
+          </a>
+          <a class="clase" href="">
+            <span class="num">02</span>
+            <span class="clase-info">
+              <span class="clase-titulo">Clase 2</span>
+              <span class="clase-temas">Usuarios reales + roles + sistema completo · Perfiles, roles y permisos globales</span>
+            </span>
+            <span class="flecha">&rarr;</span>
+          </a>
+          <a class="clase" href="">
+            <span class="num">03</span>
+            <span class="clase-info">
+              <span class="clase-titulo">Clase 3</span>
+              <span class="clase-temas">Monetización + pagos + IA aplicada · Stripe, suscripciones y webhooks</span>
+            </span>
+            <span class="flecha">&rarr;</span>
+          </a>
+          <a class="clase" href="">
+            <span class="num">04</span>
+            <span class="clase-info">
+              <span class="clase-titulo">Clase 4</span>
+              <span class="clase-temas">Deploy + producción + SaaS real · Render, Railway, Vercel y variables de entorno</span>
+            </span>
+            <span class="flecha">&rarr;</span>
+          </a>
+        </div>
+      </details>
+
+      <!-- ============ MÓDULO 4 ============ -->
+      <details class="modulo proximo">
+        <summary>
+          <span class="mod-punto"></span>
+          <span class="mod-info">
+            <span class="mod-titulo">Módulo 4</span>
+            <span class="mod-meta">AI Engineer + Producto Final + Perfil Global</span>
+          </span>
+          <span class="mod-badge">Pronto</span>
+          <span class="mod-chevron">▶</span>
+        </summary>
+        <div class="clases">
+          <a class="clase" href="">
+            <span class="num">01</span>
+            <span class="clase-info">
+              <span class="clase-titulo">Clase 1</span>
+              <span class="clase-temas">AI avanzada + automatización · Prompts profesionales y automatización con IA</span>
+            </span>
+            <span class="flecha">&rarr;</span>
+          </a>
+          <a class="clase" href="">
+            <span class="num">02</span>
+            <span class="clase-info">
+              <span class="clase-titulo">Clase 2</span>
+              <span class="clase-temas">Optimización + arquitectura + calidad · Refactorización, rendimiento y debugging</span>
+            </span>
+            <span class="flecha">&rarr;</span>
+          </a>
+          <a class="clase" href="">
+            <span class="num">03</span>
+            <span class="clase-info">
+              <span class="clase-titulo">Clase 3</span>
+              <span class="clase-temas">Portafolio + perfil global · GitHub, README, CV y LinkedIn</span>
+            </span>
+            <span class="flecha">&rarr;</span>
+          </a>
+          <a class="clase" href="">
+            <span class="num">04</span>
+            <span class="clase-info">
+              <span class="clase-titulo">Clase 4</span>
+              <span class="clase-temas">Proyecto final + mercado global · Demo, entrevista técnica y freelancing</span>
+            </span>
+            <span class="flecha">&rarr;</span>
+          </a>
+        </div>
+      </details>
+
+    </div>
+
+    <p class="empty-state" id="sinResultados" hidden><strong>No encontramos esa guía.</strong> Prueba con otro tema, número de clase o tecnología.</p>
+
+    <details class="legal-mini">
+      <summary>© Aviso de autoría y uso del material</summary>
+      <p>Este material es de <strong>autoría exclusiva de Ana Alvarado</strong> y está destinado a las y los estudiantes del curso. No se permite su reproducción o redistribución fuera de clase sin autorización escrita.</p>
+    </details>
+  </main>
+
+  <footer id="piePortal">
+    <p>© 2026 Ana Alvarado · Educadora Tech &amp; Desarrolladora Full Stack · Todos los derechos reservados</p>
+    <p>linkedin.com/in/ana-alvarado-instructora-full-stack</p>
+  </footer>
+
+  <script src="portal.js" defer></script>
+</body>
+</html>
