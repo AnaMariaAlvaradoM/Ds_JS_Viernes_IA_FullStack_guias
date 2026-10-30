@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="oscuro" data-tema-base="oscuro" data-empresa="dev-senior" data-paleta="cian">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Ana Alvarado">
+  <meta name="copyright" content="© 2026 Ana Alvarado — Todos los derechos reservados">
+  <meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+  <title>Clase 2 · APIs REST + arquitectura backend · Ana Alvarado</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&amp;family=Inter:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+  <link rel="stylesheet" href="anaestilos-v12.css">
+</head>
+<body>
+  <a class="skip-link" href="#s1">Saltar al contenido</a>
+  <div class="topline" id="topline" aria-hidden="true"></div>
+  <div class="controls" aria-label="Controles">
+    <button class="ctrl" id="temaBtn" type="button" aria-label="Cambiar tema">☀</button>
+    <button class="ctrl" id="fullscreenBtn" type="button" aria-label="Pantalla completa">⛶</button>
+  </div>
+  <div class="shell" id="shell" data-collapsed="false">
+    <aside class="sidebar" aria-label="Índice de la clase">
+      <div class="sb-top"><span class="brand-mark">A</span><div class="sb-title"><b>JavaScript AI Fullstack</b><span>Módulo 1 · Clase 2</span></div></div>
+      <button class="sb-toggle" id="collapseBtn" type="button" aria-label="Colapsar menú">‹</button>
+      <nav class="sb-nav" id="nav" aria-label="Secciones">
+        <a class="nav-item active" href="#portada"><span class="nav-index">00</span><span class="nav-label">Portada</span></a>
+        <span class="nav-group">Problema</span>
+        <a class="nav-item" href="#s1"><span class="nav-index">01</span><span class="nav-label">Agendia necesita anotar</span></a>
+        <a class="nav-item" href="#s2"><span class="nav-index">02</span><span class="nav-label">Lo que lograrás</span></a>
+        <span class="nav-group">Comprender</span>
+        <a class="nav-item" href="#s3"><span class="nav-index">03</span><span class="nav-label">El contrato REST</span></a>
+        <a class="nav-item" href="#s4"><span class="nav-index">04</span><span class="nav-label">El modelo por capas</span></a>
+        <span class="nav-group">Construir</span>
+        <a class="nav-item" href="#s5"><span class="nav-index">05</span><span class="nav-label">Separar arranque y app</span></a>
+        <a class="nav-item" href="#s6"><span class="nav-index">06</span><span class="nav-label">Router de servicios</span></a>
+        <a class="nav-item" href="#s7"><span class="nav-index">07</span><span class="nav-label">Controlador y service</span></a>
+        <a class="nav-item" href="#s8"><span class="nav-index">08</span><span class="nav-label">La lista de citas</span></a>
+        <a class="nav-item" href="#s9"><span class="nav-index">09</span><span class="nav-label">Registrar una cita</span></a>
+        <a class="nav-item" href="#s10"><span class="nav-index">10</span><span class="nav-label">Estado del proyecto</span></a>
+        <a class="nav-item" href="#s11"><span class="nav-index">11</span><span class="nav-label">Ver una cita</span></a>
+        <a class="nav-item" href="#s12"><span class="nav-index">12</span><span class="nav-label">Confirmar y eliminar</span></a>
+        <span class="nav-group">Probar y persistir</span>
+        <a class="nav-item" href="#s13"><span class="nav-index">13</span><span class="nav-label">Colección de Postman</span></a>
+        <a class="nav-item" href="#s14"><span class="nav-index">14</span><span class="nav-label">La base agendia</span></a>
+        <a class="nav-item" href="#s15"><span class="nav-index">15</span><span class="nav-label">Guardar y leer errores</span></a>
+        <span class="nav-group">Cerrar</span>
+        <a class="nav-item" href="#s16"><span class="nav-index">16</span><span class="nav-label">Cierre y puente</span></a>
+        <span class="nav-group">Consultar</span>
+        <a class="nav-item" href="#glosario"><span class="nav-index">17</span><span class="nav-label">Glosario</span></a>
+        <a class="nav-item" href="#documentacion"><span class="nav-index">18</span><span class="nav-label">Documentación</span></a>
+      </nav>
+      <div class="sb-prog"><div class="lbl"><span>Progreso</span><span id="progPct">0%</span></div><div class="track"><div class="fill" id="progFill"></div></div></div>
+    </aside>
+    <main class="main">
+      <header class="hero view" id="portada" data-accent="1">
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <span class="eyebrow">Dev Senior · Módulo 1 · Clase 2</span>
+            <h1 class="hero-title">De peticiones a citas confiables</h1>
+            <p class="hero-lead">Agendia pasa del catálogo que solo consulta a una API REST capaz de registrar, confirmar y eliminar citas con responsabilidades separadas.</p>
+            <div class="meta"><span class="pill" data-hot>Node.js 24 LTS</span><span class="pill">Express 5</span><span class="pill">Postman · PostgreSQL 18</span></div>
+          </div>
+          <figure class="hero-visual"><img src="img/agendia-agenda-a-api.png" alt="Recepcionista de un spa canino compara un cuaderno con citas cruzadas y un flujo ordenado hacia un servidor"><figcaption class="hero-note">La tensión de hoy: el catálogo ya responde, pero la agenda todavía depende del papel. <span class="figura-credito">Ilustración original creada para la clase.</span></figcaption></figure>
+        </div>
+      </header>
+      <div class="content">
+
+        <section class="section view" id="s1" data-accent="1" data-layout="canvas" data-escena="apertura" hidden>
+          <div class="sec-head"><span class="sec-n">El problema</span><h2 class="sec-t">Agendia ya responde, pero no anota</h2><p class="sec-s">Huellitas ve el catálogo correcto y todavía cruza citas en el cuaderno.</p></div>
+          <div class="body">
+            <article class="chat">
+              <div class="chat-head"><span class="chat-canal">WhatsApp · Huellitas Spa Canino</span><span class="chat-contexto">Necesidad del negocio</span></div>
+              <ol class="chat-mensajes">
+                <li class="chat-msg"><span class="chat-avatar">VR</span><span class="chat-autor">Valentina <time>8:42 a. m.</time></span><p class="chat-texto">Hola, equipo. Ya probamos el link del catálogo: la recepcionista y yo vemos el mismo precio del corte de raza. ¡Por fin! 🙌</p></li>
+                <li class="chat-msg"><span class="chat-avatar">VR</span><span class="chat-autor">Valentina <time>8:43 a. m.</time></span><p class="chat-texto">Pero seguimos anotando las citas en el cuaderno. Ayer Dana tuvo dos perros a las 3:00 p. m. otra vez.</p></li>
+                <li class="chat-msg"><span class="chat-avatar">VR</span><span class="chat-autor">Valentina <time>8:45 a. m.</time></span><p class="chat-texto">¿Cuándo podemos registrar las citas en Agendia? Necesito anotar quién viene, con qué perro, qué servicio, con cuál groomer y a qué hora. Y poder confirmarlas cuando el cliente responda, o cancelarlas.</p></li>
+                <li class="chat-msg" data-lado="equipo"><span class="chat-avatar">EA</span><span class="chat-autor">Equipo <time>9:10 a. m.</time></span><p class="chat-texto">¡Hola, Valentina! Esta semana Agendia empieza a registrar citas. Te contamos el viernes.</p></li>
+              </ol>
+            </article>
+            <h3>1.1 · Traducir la necesidad</h3>
+            <p>Valentina pide cuatro acciones sobre una cita: <strong>registrarla</strong>, <strong>consultarla</strong>, <strong>cambiar su estado</strong> (confirmada, cancelada) y <strong>borrarla</strong> si se anotó por error. En software, esas cuatro acciones tienen un nombre: <strong>CRUD</strong> (<em>Create, Read, Update, Delete</em>: crear, leer, actualizar, eliminar).</p>
+            <div class="micro-task"><span class="component-label">Recuerda</span><p class="micro-task-q">En la Clase 1, ¿por qué convertimos el id con <code>Number(req.params.id)</code> antes de buscar el servicio?</p><details class="micro-reveal"><summary>Comprobar</summary><p class="micro-answer">Porque todo lo que llega en la URL es texto. <code>req.params.id</code> vale <code>'2'</code>, no <code>2</code>, y <code>'2' === 2</code> es <code>false</code>: sin <code>Number()</code>, <code>find</code> nunca encuentra nada y la ruta responde 404 para todos los servicios.</p></details></div>
+            <h3>1.2 · Ver el problema que crece</h3>
+            <p>Hoy <code>index.js</code> tiene 34 líneas y tres rutas. Las citas agregan cinco rutas más, con reglas propias. Después vendrán clientes, profesionales y pagos.</p>
+          </div>
+        </section>
+
+        <section class="section view" id="s2" data-accent="1" data-layout="canvas" data-escena="objetivos" hidden>
+          <div class="sec-head"><span class="sec-n">Ruta de hoy</span><h2 class="sec-t">Lo que lograrás en esta sesión</h2><p class="sec-s">El contrato REST y las capas convierten la necesidad de Valentina en un CRUD verificable.</p></div>
+          <div class="body">
+            <div class="estado-proyecto" role="group" aria-label="El proyecto antes y después de la clase"><div class="estado-antes"><span class="component-label">Antes de hoy</span><p>Agendia responde el catálogo de Huellitas, pero no puede registrar citas y todo vive en un solo archivo.</p></div><div class="estado-flecha" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div><div class="estado-despues"><span class="component-label">Al terminar</span><p>Agendia registra, consulta, confirma y elimina citas, con el código organizado en capas.</p></div></div>
+            <ol class="objetivos">
+              <li><div><p class="obj-texto"><strong>Explicar</strong> qué es una API REST.</p><p class="obj-evidencia">Dices qué método y qué código de estado corresponden a “registrar una cita”, “confirmarla” y “borrarla”, y por qué.</p></div></li>
+              <li><div><p class="obj-texto"><strong>Construir</strong> Agendia en capas <code>routes / controllers / services</code>.</p><p class="obj-evidencia">Señalas en qué archivo vive cada responsabilidad y el catálogo de la Clase 1 sigue respondiendo igual.</p></div></li>
+              <li><div><p class="obj-texto"><strong>Verificar</strong> el CRUD de citas con Postman.</p><p class="obj-evidencia">Creas una cita y Postman muestra <code>201 Created</code>, la confirmas con <code>PATCH</code> y la eliminas con <code>204 No Content</code>.</p></div></li>
+            </ol>
+          </div>
+        </section>
+
+        <section class="section view" id="s3" data-accent="1" data-layout="canvas" data-escena="concepto" hidden>
+          <div class="sec-head"><span class="sec-n">Comprender</span><h2 class="sec-t">REST: un contrato entre cliente y servidor</h2><p class="sec-s">La URL nombra la cosa, el método dice la acción y el código cuenta el resultado.</p></div>
+          <div class="body">
+            <h3>3.1 · Partir de HTTP</h3>
+            <p>En la Clase 1 viste la conversación de HTTP: el cliente envía una <strong>petición</strong> (método + dirección) y el servidor devuelve una <strong>respuesta</strong> (código de estado + contenido). Hasta hoy solo usamos el método <code>GET</code>, que pide información.</p>
+            <p>Para registrar una cita, el cliente tiene que <strong>enviar</strong> datos. Eso abre tres preguntas: a qué dirección los envía, con qué método y qué le responde el servidor. REST responde las tres.</p>
+            <div class="definicion"><div class="def-tecnica"><span class="def-termino">REST</span><p><strong>REST</strong> (<em>Representational State Transfer</em>) es un estilo para diseñar APIs sobre HTTP. Organiza la API alrededor de <strong>recursos</strong> (las cosas del negocio, identificadas por una URL), usa los <strong>métodos HTTP</strong> para decir qué se hace con ellos y los <strong>códigos de estado</strong> para decir cómo salió.</p></div><div class="def-vida"><p>Es como el mostrador de una notaría. Cada trámite tiene su ventanilla (la URL), el formulario dice qué quieres hacer (el método) y el sello de la respuesta dice cómo salió: radicado, rechazado, no existe (el código). Cualquier persona que conozca esas reglas puede hacer el trámite sin preguntarle a nadie cómo funciona esa oficina en particular.</p></div></div>
+            <h3>3.2 · Nombrar recursos</h3>
+            <p>En Agendia, los recursos son las cosas que Valentina maneja: servicios y citas. La URL nombra el recurso, nunca la acción:</p>
+            <div class="table-wrap"><table class="data-table"><thead><tr><th>Bien (recurso)</th><th>Mal (acción en la URL)</th></tr></thead><tbody><tr><td><code>POST /api/citas</code></td><td><code>POST /api/crearCita</code></td></tr><tr><td><code>DELETE /api/citas/7</code></td><td><code>GET /api/borrarCita?id=7</code></td></tr></tbody></table></div>
+            <p>La acción ya la dice el método. Si la URL también la dice, se repite información y cada equipo inventa sus propios verbos.</p>
+            <h3>3.3 · Elegir método y código</h3>
+            <div class="table-wrap"><table class="data-table"><caption>Métodos que usaremos hoy</caption><thead><tr><th>Método</th><th>Qué pide</th><th>En Agendia</th></tr></thead><tbody><tr><td><code>GET</code></td><td>Leer, sin cambiar nada</td><td>Ver las citas o una cita</td></tr><tr><td><code>POST</code></td><td>Crear algo nuevo dentro de una colección</td><td>Registrar una cita</td></tr><tr><td><code>PATCH</code></td><td>Cambiar <strong>una parte</strong> de algo que ya existe</td><td>Confirmar o cancelar una cita</td></tr><tr><td><code>PUT</code></td><td>Reemplazar <strong>completo</strong> algo que ya existe</td><td>Clase 3, para editar un servicio</td></tr><tr><td><code>DELETE</code></td><td>Eliminar</td><td>Borrar una cita anotada por error</td></tr></tbody></table></div>
+            <div class="table-wrap"><table class="data-table"><caption>Códigos que usaremos hoy</caption><thead><tr><th>Código</th><th>Nombre</th><th>Cuándo</th></tr></thead><tbody><tr><td class="num">200</td><td>OK</td><td>La consulta o el cambio salió bien y hay algo que mostrar</td></tr><tr><td class="num">201</td><td>Created</td><td>Se creó algo nuevo; la respuesta trae lo creado</td></tr><tr><td class="num">204</td><td>No Content</td><td>Salió bien y no hay nada que mostrar</td></tr><tr><td class="num">404</td><td>Not Found</td><td>El recurso pedido no existe</td></tr><tr><td class="num">500</td><td>Internal Server Error</td><td>El servidor falló: el problema está en nuestro código</td></tr></tbody></table></div>
+            <p>Los códigos <code>400</code> (datos mal enviados) y <code>409</code> (conflicto, como dos citas cruzadas) llegan en la Clase 3.</p>
+            <div class="micro-task"><span class="component-label">Para pensar</span><p class="micro-task-q">La recepcionista anotó por error una cita para un perro que no existe y la quiere borrar. ¿Qué método y qué URL usas, y qué código esperas si todo sale bien?</p><details class="micro-reveal"><summary>Comprobar</summary><p class="micro-answer"><code>DELETE /api/citas/7</code> (o el id que tenga). Si sale bien, <code>204 No Content</code>: la cita ya no existe, así que no hay nada que devolver. Si la cita 7 no existe, <code>404</code>.</p></details></div>
+          </div>
+        </section>
+
+        <section class="section view" id="s4" data-accent="1" data-layout="canvas" data-escena="concepto" hidden>
+          <div class="sec-head"><span class="sec-n">Comprender</span><h2 class="sec-t">Arquitectura en capas: el modelo</h2><p class="sec-s">Cada trabajo tiene un lugar y cada capa habla solo con la de al lado.</p></div>
+          <div class="body">
+            <p>Mira la ruta de la Clase 1 que busca un servicio por id. En seis líneas hace tres trabajos distintos:</p>
+            <ol><li><strong>Recibir:</strong> lee el id de la URL (<code>req.params.id</code>).</li><li><strong>Decidir y guardar:</strong> busca en el arreglo <code>servicios</code>, que además vive en el mismo archivo.</li><li><strong>Responder:</strong> elige el código (<code>404</code> o <code>200</code>) y envía el JSON.</li></ol>
+            <p>Con una ruta no importa. Con quince rutas, cambiar dónde se guardan los datos obliga a tocar las quince.</p>
+            <figure class="figura"><div class="figura-stage"><img src="img/flujo-api-capas.png" alt="Una solicitud de cita atraviesa tres estaciones: enrutamiento, coordinación y reglas con datos, y sale como respuesta confirmada"></div><figcaption>Una petición atraviesa rutas, controladores y services; cada capa transforma solo su parte. <span class="figura-credito">Ilustración original creada para la clase.</span></figcaption></figure>
+            <h3>4.1 · Definir las capas</h3>
+            <p>Una <strong>arquitectura en capas</strong> reparte el código del backend en grupos con una sola responsabilidad cada uno. Cada capa solo habla con la de al lado. En Agendia usaremos tres:</p>
+            <div class="table-wrap"><table class="data-table"><thead><tr><th>Capa</th><th>Carpeta</th><th>Su único trabajo</th></tr></thead><tbody><tr><td>Rutas</td><td><code>src/routes/</code></td><td>Decir qué función atiende cada método y URL</td></tr><tr><td>Controladores</td><td><code>src/controllers/</code></td><td>Leer la petición, llamar al service y elegir el código de respuesta</td></tr><tr><td>Servicios</td><td><code>src/services/</code></td><td>Guardar los datos y aplicar las reglas del negocio</td></tr></tbody></table></div>
+            <div class="papel"><p>Piensa en Huellitas un sábado. La <strong>recepcionista</strong> recibe al cliente y le indica a qué puesto ir (la ruta). El <strong>coordinador</strong> de ese puesto toma la orden, la pasa a quien la hace y le avisa al cliente cómo salió (el controlador). El <strong>groomer</strong> hace el trabajo y conoce las reglas del oficio (el servicio). La recepcionista no baña perros y el groomer no atiende la puerta.</p></div>
+            <h3>4.2 · Seguir una petición</h3>
+            <div class="code-block"><div class="code-head"><div><span class="code-context">Flujo de POST /api/citas</span></div></div><pre><code class="language-plaintext">Postman: POST /api/citas  { servicioId: 2, clienteNombre: "Laura Gómez", … }
+↓
+app.js               → express.json() convierte el cuerpo; /api/citas va al router
+↓
+citas.routes.js      → POST / lo atiende crearCita
+↓
+citas.controller.js  → toma req.body y se lo pasa al service
+↓
+citas.service.js     → agrega id y estado PENDIENTE, y guarda en el arreglo
+↓
+citas.controller.js  → responde 201 con la cita creada
+↓
+Postman: 201 Created  { id: 1, …, estado: "PENDIENTE" }</code></pre></div>
+            <div class="micro-task"><span class="component-label">Para pensar</span><p class="micro-task-q">En la Clase 3 las citas se guardarán en PostgreSQL en lugar de un arreglo. ¿Qué capa tienes que cambiar?</p><details class="micro-reveal"><summary>Comprobar</summary><p class="micro-answer">Solo los services. Las rutas siguen diciendo qué función atiende cada URL y los controladores siguen recibiendo y respondiendo igual; nadie fuera del service sabe dónde se guardan los datos.</p></details></div>
+            <div class="table-wrap"><table class="data-table"><caption>Quién dice que va así</caption><thead><tr><th>Etiqueta</th><th>Quién lo dice</th><th>¿Se puede cambiar?</th><th>Dónde se verifica</th></tr></thead><tbody><tr><td>🟨 Lenguaje</td><td>La sintaxis de JavaScript</td><td>No</td><td>MDN</td></tr><tr><td>🟩 Plataforma</td><td>Node.js, el navegador, PostgreSQL</td><td>No, salvo por configuración</td><td>Documentación de Node.js o PostgreSQL</td></tr><tr><td>🟧 Framework o librería</td><td>El contrato de Express</td><td>No: si no se respeta, no funciona</td><td>Documentación de Express</td></tr><tr><td>⬜ Convención</td><td>La comunidad o el equipo lo hace así</td><td>Sí, aunque conviene respetarla</td><td>Guías de estilo, costumbre del equipo</td></tr><tr><td>🟪 Decisión del proyecto</td><td>Nosotros, por el negocio o el diseño</td><td>Sí, si cambia el negocio</td><td>El caso de Huellitas y esta guía</td></tr></tbody></table></div>
+          </div>
+        </section>
+
+        <section class="section view" id="s5" data-accent="1" data-layout="canvas" data-escena="construccion" hidden>
+          <div class="sec-head"><span class="sec-n">Construir</span><h2 class="sec-t">Separar el arranque de la configuración</h2><p class="sec-s">Configurar qué sabe hacer Agendia no es lo mismo que abrir el puerto.</p></div>
+          <div class="body">
+            <p>Antes de repartir las rutas, hay que separar dos trabajos que hoy comparten <code>index.js</code>: <strong>configurar</strong> la aplicación (qué sabe hacer) y <strong>encenderla</strong> (abrir el puerto). Cuando en el Módulo 3 Agendia se despliegue, o cuando escribamos pruebas automáticas, vamos a querer usar la aplicación sin abrir el puerto 3000. Por eso la configuración vive en <code>app.js</code> y el arranque en <code>index.js</code>.</p>
+            <div class="mision"><div class="mision-head"><span class="mision-marca">M</span><h3 class="mision-titulo">Separar sin romper</h3></div><div class="mision-grid"><div class="mision-item"><span class="component-label">Para Valentina</span><p>Que el catálogo siga respondiendo exactamente igual mientras reorganizamos todo por dentro.</p></div><div class="mision-item"><span class="component-label">Lo que hacemos</span><p><code>app.js</code> configura Express; <code>index.js</code> solo lo enciende.</p></div><div class="mision-item"><span class="component-label">Cómo sabemos que quedó</span><p><code>http://localhost:3000<wbr>/api/servicios/2</code> responde el corte de raza, igual que el viernes pasado.</p></div></div></div>
+            <h3>5.1 · Quitar el arranque</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Renombrar y editar</span><span class="archivo-nombre">app.js</span><span class="archivo-ruta">agendia-api/src/</span></div><p class="archivo-intro"><code>app.js</code> nace de <code>index.js</code>: es el mismo archivo sin la parte que enciende el servidor. Por eso no lo escribes de cero: lo renombras y le quitas dos piezas. Al final de este momento le agregarás la línea que lo deja usar desde otro archivo.</p>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">1</span><h3 class="lectura-titulo"><code>app.js</code> deja de encender el servidor</h3><p class="lectura-proposito"><b>Necesidad:</b> <code>index.js</code> tiene la configuración y el arranque juntos. Primero sacamos la configuración a su propio archivo. <b>Dónde va:</b> apaga el servidor (<code>Ctrl + C</code>). Renombra <code>src/index.js</code> como <code>app.js</code> y borra estas dos piezas.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Piezas que se quitan</span></div></div><pre><code class="language-javascript">const PUERTO = 3000;
+
+app.listen(PUERTO, () => {
+  console.log(`Agendia API escuchando en http://localhost:${PUERTO}`);
+});</code></pre></div><ol class="notas"><li class="nota" data-lineas="1"><div class="nota-cabeza"><span class="nota-lineas">Pieza 1</span><code class="nota-codigo">const PUERTO = 3000</code></div><p>🟪 Decisión del proyecto · El puerto solo lo necesita quien enciende el servidor. <code>app.js</code> describe qué sabe hacer Agendia; en qué puerto escucha es un asunto del arranque, y se muda a <code>index.js</code>.</p></li><li class="nota" data-lineas="3-5"><div class="nota-cabeza"><span class="nota-lineas">Pieza 2</span><code class="nota-codigo">app.listen(…)</code></div><p>🟧 Express · <code>listen</code> abre el puerto y deja el programa esperando. Es justo lo que separamos: <code>app.js</code> prepara la aplicación sin encenderla.</p><p class="nota-enlace" data-dir="despues">Lo usarás en el paso 2, dentro de <code>index.js</code>.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><p class="build-step-purpose">Desde <code>agendia-api</code>, intenta encender Agendia con el script de la Clase 1.</p><div class="code-block" data-tipo="terminal"><div class="code-head"><div><span class="code-context">Terminal · desde agendia-api</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-bash">npm run dev</code></pre></div><div class="consola"><div class="consola-head">Salida esperada resumida</div><ol><li class="out">Error: Cannot find module 'C:\…\agendia-api\src\index.js'</li><li class="out">Failed running 'src/index.js'. Waiting for file changes before restarting...</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>El error pide el archivo que acabas de mover.</h3><p>El script <code>dev</code> ejecuta <code>src/index.js</code>, y ese archivo ya no existe porque lo renombraste. Node lo dice con <em>Cannot find module</em>. La última línea es de <code>--watch</code>: se queda esperando a que guardes un cambio para volver a intentarlo. Deja la terminal así.</p></div></div>
+            </article>
+            <h3>5.2 · Crear el punto de entrada</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Crear</span><span class="archivo-nombre">index.js</span><span class="archivo-ruta">agendia-api/src/</span></div><p class="archivo-intro">El nuevo <code>index.js</code> tiene un solo trabajo: traer la aplicación configurada y encenderla. Es el archivo que ejecuta <code>npm run dev</code>, así que el nombre no cambia.</p>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">2</span><h3 class="lectura-titulo"><code>index.js</code> solo enciende</h3><p class="lectura-proposito"><b>Necesidad:</b> <code>npm run dev</code> busca <code>src/index.js</code> y no lo encuentra. <b>Dónde va:</b> crea <code>index.js</code> dentro de <code>src</code>.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 1–7</span></div></div><pre class="line-numbers" data-start="1"><code class="language-javascript">import app from './app.js';
+
+const PUERTO = 3000;
+
+app.listen(PUERTO, () => {
+  console.log(`Agendia API escuchando en http://localhost:${PUERTO}`);
+});</code></pre></div><ol class="notas"><li class="nota" data-lineas="1"><div class="nota-cabeza"><span class="nota-lineas">L1</span><code class="nota-codigo">import app from './app.js'</code></div><p>🟨 JavaScript <code>import … from</code> · 🟩 Node.js la ruta <code>'./app.js'</code> · Trae la aplicación que configura <code>app.js</code>. <code>./</code> significa “en esta misma carpeta” y la extensión <code>.js</code> es obligatoria: con <code>"type": "module"</code>, Node no adivina extensiones. <code>app</code> sin llaves pide lo que <code>app.js</code> exporte por defecto.</p></li><li class="nota" data-lineas="3"><div class="nota-cabeza"><span class="nota-lineas">L3</span><code class="nota-codigo">const PUERTO = 3000</code></div><p>⬜ Convención el nombre en mayúsculas · La constante que quitaste de <code>app.js</code> vive ahora aquí, donde se usa.</p></li><li class="nota" data-lineas="5-7"><div class="nota-cabeza"><span class="nota-lineas">L5–7</span><code class="nota-codigo">app.listen(…)</code></div><p>🟧 Express · El mismo <code>listen</code> de la Clase 1: abre el puerto 3000 y, cuando queda abierto, ejecuta la función flecha que imprime la dirección.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><p class="build-step-purpose">Guarda. <code>--watch</code> vuelve a intentarlo solo.</p><div class="consola"><div class="consola-head">Salida esperada resumida</div><ol><li class="out">SyntaxError: The requested module './app.js' does not provide an export named 'default'</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3><code>index.js</code> ya encuentra a <code>app.js</code>.</h3><p>El módulo <code>./app.js</code> no ofrece una exportación llamada <code>default</code>. <code>index.js</code> pide la aplicación, pero <code>app.js</code> no la está entregando: cada archivo de JavaScript es cerrado por defecto, y lo que no se exporta no se puede usar desde afuera.</p></div></div>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">3</span><h3 class="lectura-titulo"><code>app.js</code> entrega la aplicación</h3><p class="lectura-proposito"><b>Necesidad:</b> <code>index.js</code> pide la aplicación por defecto y <code>app.js</code> no la exporta. <b>Dónde va:</b> al final de <code>app.js</code>, después del <code>});</code> de la última ruta, dejando una línea en blanco.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 30–31</span></div></div><pre class="line-numbers" data-start="30"><code class="language-javascript">
+export default app;</code></pre></div><ol class="notas"><li class="nota" data-lineas="31"><div class="nota-cabeza"><span class="nota-lineas">L31</span><code class="nota-codigo">export default app</code></div><p>🟨 JavaScript · <code>export</code> abre una puerta para que otro archivo use algo de este; <code>default</code> la marca como la entrega principal del archivo, la que se importa sin llaves. Aquí se entrega la aplicación con sus rutas ya registradas.</p><p class="nota-enlace" data-dir="despues"><code>index.js</code> la recibe con <code>import app from './app.js'</code>.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><div class="consola"><div class="consola-head">Terminal y navegador</div><ol><li class="out">Agendia API escuchando en http://localhost:3000</li><li class="in">http://localhost:3000/api/servicios/2</li><li class="out">{"id":2,"nombre":"Corte de raza","duracionMin":90,"precio":65000}</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>Todo responde igual que en la Clase 1.</h3><p>Para el cliente nada cambió; por dentro, Agendia ya tiene el arranque separado.</p></div></div>
+              <aside class="callout" data-tone="warning"><span class="callout-icon">!</span><div><h3>Quítala y mira</h3><p>Ya lo viste en el paso 2: sin <code>export default app</code>, <code>index.js</code> no puede arrancar. Esa línea es la única conexión entre los dos archivos.</p></div></aside>
+              <details class="code-reveal" data-archivo="app.js"><summary><span><span class="code-reveal-title">app.js · como queda al terminar este momento</span><span class="code-reveal-note">31 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Editar</span><span class="code-file">app.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import express from 'express';
+
+const app = express();
+
+const servicios = [
+  { id: 1, nombre: 'Baño completo', duracionMin: 60, precio: 45000 },
+  { id: 2, nombre: 'Corte de raza', duracionMin: 90, precio: 65000 },
+  { id: 3, nombre: 'Spa relajante', duracionMin: 120, precio: 85000 },
+  { id: 4, nombre: 'Corte de uñas', duracionMin: 20, precio: 15000 },
+];
+
+app.get('/api/salud', (req, res) => {
+  res.json({ estado: 'ok', servicio: 'agendia-api' });
+});
+
+app.get('/api/servicios', (req, res) => {
+  res.json(servicios);
+});
+
+app.get('/api/servicios/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const servicio = servicios.find((s) => s.id === id);
+
+  if (!servicio) {
+    return res.status(404).json({ error: `No existe el servicio con id ${id}` });
+  }
+
+  res.json(servicio);
+});
+
+export default app;</code></pre></div></div></details>
+              <details class="code-reveal" data-archivo="index.js"><summary><span><span class="code-reveal-title">index.js · como queda al terminar este momento</span><span class="code-reveal-note">7 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Crear</span><span class="code-file">index.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import app from './app.js';
+
+const PUERTO = 3000;
+
+app.listen(PUERTO, () => {
+  console.log(`Agendia API escuchando en http://localhost:${PUERTO}`);
+});</code></pre></div></div></details>
+            </article>
+          </div>
+        </section>
+
+        <section class="section view" id="s6" data-accent="1" data-layout="canvas" data-escena="construccion" hidden>
+          <div class="sec-head"><span class="sec-n">Construir</span><h2 class="sec-t">Los servicios: de la URL al router</h2><p class="sec-s">Construimos de afuera hacia adentro y cada error señala la pieza que falta.</p></div>
+          <div class="body">
+            <p><code>app.js</code> ya no enciende el servidor, pero todavía guarda el catálogo y decide qué responder. Vamos a mudar el catálogo de servicios a sus tres capas, y lo haremos <strong>de afuera hacia adentro</strong>: primero decimos quién atiende <code>/api/servicios</code>, y cada error que aparezca nos dirá qué archivo falta. Así se piensa una arquitectura: desde la petición que llega hasta el dato que se guarda.</p>
+            <div class="mision"><div class="mision-head"><span class="mision-marca">M</span><h3 class="mision-titulo">El mismo catálogo, por capas</h3></div><div class="mision-grid"><div class="mision-item"><span class="component-label">Para Valentina</span><p>El mismo catálogo, sin un solo cambio visible.</p></div><div class="mision-item"><span class="component-label">Lo que hacemos</span><p><code>servicios.routes.js</code> → <code>servicios.controller.js</code> → <code>servicios.service.js</code>.</p></div><div class="mision-item"><span class="component-label">Cómo sabemos que quedó</span><p><code>/api/servicios</code>, <code>/api/servicios/2</code> y <code>/api/servicios/9</code> responden exactamente lo mismo que en la Clase 1.</p></div></div></div>
+            <p>Crea dentro de <code>src</code> las carpetas <code>routes</code>, <code>controllers</code> y <code>services</code>.</p>
+            <h3>6.1 · Montar el router</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar</span><span class="archivo-nombre">app.js</span><span class="archivo-ruta">agendia-api/src/</span></div><p class="archivo-intro"><code>app.js</code> solo debe decir a quién le toca atender todo lo que empiece por <code>/api/servicios</code>.</p>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">1</span><h3 class="lectura-titulo"><code>app.js</code> le pasa <code>/api/servicios</code> a su router</h3><p class="lectura-proposito"><b>Necesidad:</b> las rutas de servicios no deben vivir en <code>app.js</code>. <b>Dónde va:</b> borra el arreglo <code>servicios</code> y las dos rutas de servicios. Agrega el import debajo de <code>express</code> y el <code>app.use</code> debajo de la ruta de salud.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 2 y 10</span></div></div><pre class="line-numbers" data-start="2"><code class="language-javascript">import serviciosRouter from './routes/servicios.routes.js';
+
+app.use('/api/servicios', serviciosRouter);</code></pre></div><ol class="notas"><li class="nota" data-lineas="2"><div class="nota-cabeza"><span class="nota-lineas">L2</span><code class="nota-codigo">import serviciosRouter</code></div><p>🟨 JavaScript <code>import</code> · ⬜ Convención el nombre <code>servicios.routes.js</code> · 🟪 Decisión del proyecto el nombre <code>serviciosRouter</code> · Trae el router que atenderá las rutas de servicios. El archivo todavía no existe: el error del Pruébalo te lo va a pedir.</p></li><li class="nota" data-lineas="4"><div class="nota-cabeza"><span class="nota-lineas">L10</span><code class="nota-codigo">app.use('/api/servicios', serviciosRouter)</code></div><p>🟧 Express · <code>app.use</code> monta el router en un prefijo: toda petición cuya URL empiece por <code>/api/servicios</code> se la entrega a <code>serviciosRouter</code>, quitándole ese prefijo. Así, dentro del router, <code>/api/servicios/2</code> se ve como <code>/2</code>.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><div class="consola"><div class="consola-head">Salida esperada resumida</div><ol><li class="out">Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'C:\…\src\routes\servicios.routes.js' imported from C:\…\src\app.js</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>El error nombra la siguiente pieza.</h3><p>El mensaje dice qué archivo falta y quién lo pidió (<em>imported from</em>). <code>app.js</code> pide <code>servicios.routes.js</code> y no existe.</p></div></div>
+            </article>
+            <h3>6.2 · Declarar las rutas</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Crear</span><span class="archivo-nombre">servicios.routes.js</span><span class="archivo-ruta">agendia-api/src/routes/</span></div><p class="archivo-intro">Las rutas son la recepción de Huellitas: no hacen el trabajo, solo dicen a qué puesto va cada petición. Este archivo recibe todo lo que <code>app.js</code> le entrega bajo <code>/api/servicios</code>.</p>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">2</span><h3 class="lectura-titulo">Qué función atiende cada ruta</h3><p class="lectura-proposito"><b>Necesidad:</b> <code>app.js</code> busca el archivo de rutas. <b>Dónde va:</b> crea <code>servicios.routes.js</code> dentro de <code>routes</code>.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 1–8</span></div></div><pre class="line-numbers" data-start="1"><code class="language-javascript">import { Router } from 'express';
+
+const router = Router();
+
+router.get('/', listarServicios);
+router.get('/:id', obtenerServicio);
+
+export default router;</code></pre></div><ol class="notas"><li class="nota" data-lineas="1"><div class="nota-cabeza"><span class="nota-lineas">L1</span><code class="nota-codigo">import { Router }</code></div><p>🟨 JavaScript las llaves <code>{ }</code> · 🟧 Express <code>Router</code> · Las llaves piden una exportación con nombre: de todo lo que ofrece Express, solo traemos <code>Router</code>.</p></li><li class="nota" data-lineas="3"><div class="nota-cabeza"><span class="nota-lineas">L3</span><code class="nota-codigo">const router = Router()</code></div><p>🟧 Express · Llamar a <code>Router()</code> crea una mini aplicación que solo tiene rutas. Se registra igual que <code>app</code>, pero no abre ningún puerto: <code>app.use</code> la monta.</p></li><li class="nota" data-lineas="5"><div class="nota-cabeza"><span class="nota-lineas">L5</span><code class="nota-codigo">router.get('/', listarServicios)</code></div><p>🟧 Express · 🟪 Decisión del proyecto el nombre <code>listarServicios</code> · <code>'/'</code> es relativo al prefijo: significa <code>/api/servicios</code>. La función va sin paréntesis porque se la entregamos a Express para que la llame cuando llegue la petición.</p></li><li class="nota" data-lineas="6"><div class="nota-cabeza"><span class="nota-lineas">L6</span><code class="nota-codigo">router.get('/:id', obtenerServicio)</code></div><p>🟧 Express <code>:id</code> · Captura el segmento de la URL. Con el prefijo, atiende <code>/api/servicios/2</code>.</p></li><li class="nota" data-lineas="8"><div class="nota-cabeza"><span class="nota-lineas">L8</span><code class="nota-codigo">export default router</code></div><p>🟨 JavaScript · Entrega el router a <code>app.js</code>, que lo recibe con el nombre <code>serviciosRouter</code>.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><div class="consola"><div class="consola-head">Salida esperada resumida</div><ol><li class="out">ReferenceError: listarServicios is not defined</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>El archivo existe; ahora faltan sus funciones.</h3><p><em>ReferenceError</em> se lee “usaste un nombre que no existe en este archivo”. <code>listarServicios</code> no está definido aquí ni importado.</p></div></div>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">3</span><h3 class="lectura-titulo">Las funciones vienen del controlador</h3><p class="lectura-proposito"><b>Necesidad:</b> el router usa <code>listarServicios</code> y <code>obtenerServicio</code>, pero no sabe de dónde salen. <b>Dónde va:</b> debajo de la línea 1.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Línea 2</span></div></div><pre class="line-numbers" data-start="2"><code class="language-javascript">import { listarServicios, obtenerServicio } from '../controllers/servicios.controller.js';</code></pre></div><ol class="notas"><li class="nota" data-lineas="2"><div class="nota-cabeza"><span class="nota-lineas">L2</span><code class="nota-codigo">import { listarServicios, obtenerServicio }</code></div><p>🟨 JavaScript · ⬜ Convención el nombre <code>servicios.controller.js</code> · Trae las dos funciones con nombre del controlador. <code>../</code> sube desde <code>routes/</code> hasta <code>src/</code> y entra a <code>controllers/</code>.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><div class="consola"><div class="consola-head">Salida esperada resumida</div><ol><li class="out">Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'C:\…\src\controllers\servicios.controller.js' imported from C:\…\src\routes\servicios.routes.js</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>Ahora falta el controlador.</h3><p>Quien pide es <code>servicios.routes.js</code>, y el error vuelve a señalar el siguiente archivo.</p></div></div>
+              <details class="code-reveal" data-archivo="servicios.routes.js"><summary><span><span class="code-reveal-title">servicios.routes.js · como queda al terminar este momento</span><span class="code-reveal-note">9 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Crear</span><span class="code-file">servicios.routes.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import { Router } from 'express';
+import { listarServicios, obtenerServicio } from '../controllers/servicios.controller.js';
+
+const router = Router();
+
+router.get('/', listarServicios);
+router.get('/:id', obtenerServicio);
+
+export default router;</code></pre></div></div></details>
+            </article>
+          </div>
+        </section>
+
+        <section class="section view" id="s7" data-accent="1" data-layout="canvas" data-escena="construccion" hidden>
+          <div class="sec-head"><span class="sec-n">Construir</span><h2 class="sec-t">Los servicios: responder y guardar</h2><p class="sec-s">El controlador traduce a HTTP; el service conoce los datos.</p></div>
+          <div class="body">
+            <h3>7.1 · Responder el catálogo</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Crear</span><span class="archivo-nombre">servicios.controller.js</span><span class="archivo-ruta">agendia-api/src/controllers/</span></div><p class="archivo-intro">El controlador es el coordinador: recibe la petición, le pide el trabajo al service y decide qué código y qué contenido responder. No guarda datos.</p>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">4</span><h3 class="lectura-titulo">Responder el catálogo</h3><p class="lectura-proposito"><b>Necesidad:</b> el router busca el controlador de servicios. <b>Dónde va:</b> crea <code>servicios.controller.js</code> dentro de <code>controllers</code>.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 1–5</span></div></div><pre class="line-numbers" data-start="1"><code class="language-javascript">import * as serviciosService from '../services/servicios.service.js';
+
+export function listarServicios(req, res) {
+  res.json(serviciosService.listar());
+}</code></pre></div><ol class="notas"><li class="nota" data-lineas="1"><div class="nota-cabeza"><span class="nota-lineas">L1</span><code class="nota-codigo">import * as serviciosService</code></div><p>🟨 JavaScript <code>import * as</code> · ⬜ Convención el nombre <code>servicios.service.js</code> · Trae todas las exportaciones del service agrupadas en un objeto llamado <code>serviciosService</code>. Así se lee de qué capa viene cada función.</p></li><li class="nota" data-lineas="3"><div class="nota-cabeza"><span class="nota-lineas">L3</span><code class="nota-codigo">export function listarServicios(req, res)</code></div><p>🟨 JavaScript <code>export function</code> · 🟧 Express la forma <code>(req, res)</code> · ⬜ Convención los nombres <code>req</code> y <code>res</code> · La ofrece con su nombre para que el router la importe.</p></li><li class="nota" data-lineas="4"><div class="nota-cabeza"><span class="nota-lineas">L4</span><code class="nota-codigo">res.json(serviciosService.listar())</code></div><p>🟧 Express · El controlador no sabe dónde vive el catálogo: se lo pide al service y lo responde. Código 200 por defecto.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><div class="consola"><div class="consola-head">Salida esperada resumida</div><ol><li class="out">Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'C:\…\src\services\servicios.service.js' imported from C:\…\src\controllers\servicios.controller.js</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>Falta la última capa.</h3><p>El controlador ya carga; ahora pide el service donde vivirán los datos.</p></div></div>
+            </article>
+            <h3>7.2 · Mover el catálogo</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Crear</span><span class="archivo-nombre">servicios.service.js</span><span class="archivo-ruta">agendia-api/src/services/</span></div><p class="archivo-intro">El service es el groomer: hace el trabajo y conoce las reglas. Aquí vive el catálogo de Huellitas. Es el único archivo que sabe que los servicios están en un arreglo; en la Clase 3 cambiará el arreglo por PostgreSQL y nadie más se enterará.</p>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">5</span><h3 class="lectura-titulo">El catálogo vive en el service</h3><p class="lectura-proposito"><b>Necesidad:</b> el controlador busca el service. <b>Dónde va:</b> crea <code>servicios.service.js</code> dentro de <code>services</code>.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 1–10</span></div></div><pre class="line-numbers" data-start="1"><code class="language-javascript">const servicios = [
+  { id: 1, nombre: 'Baño completo', duracionMin: 60, precio: 45000 },
+  { id: 2, nombre: 'Corte de raza', duracionMin: 90, precio: 65000 },
+  { id: 3, nombre: 'Spa relajante', duracionMin: 120, precio: 85000 },
+  { id: 4, nombre: 'Corte de uñas', duracionMin: 20, precio: 15000 },
+];
+
+export function listar() {
+  return servicios;
+}</code></pre></div><ol class="notas"><li class="nota" data-lineas="1-6"><div class="nota-cabeza"><span class="nota-lineas">L1–6</span><code class="nota-codigo">const servicios = [ … ]</code></div><p>🟪 Decisión del proyecto · El mismo catálogo de la Clase 1, ahora en su capa. No lleva <code>export</code>: nadie fuera del service puede tocar el arreglo directamente, solo a través de sus funciones.</p></li><li class="nota" data-lineas="8"><div class="nota-cabeza"><span class="nota-lineas">L8</span><code class="nota-codigo">export function listar()</code></div><p>🟨 JavaScript · 🟪 Decisión del proyecto el nombre · No recibe <code>req</code> ni <code>res</code>: el service no sabe nada de HTTP. Solo sabe de servicios.</p></li><li class="nota" data-lineas="9"><div class="nota-cabeza"><span class="nota-lineas">L9</span><code class="nota-codigo">return servicios</code></div><p>🟨 JavaScript · Devuelve el arreglo a quien lo pidió. Sin <code>return</code>, devolvería <code>undefined</code> y <code>res.json(undefined)</code> respondería vacío.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><div class="consola"><div class="consola-head">Salida esperada resumida</div><ol><li class="out">SyntaxError: The requested module '../controllers/servicios.controller.js' does not provide an export named 'obtenerServicio'</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>Todos los archivos existen.</h3><p>Ahora el router pide <code>obtenerServicio</code> y el controlador todavía no la exporta.</p></div></div>
+            </article>
+            <h3>7.3 · Buscar por id</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar</span><span class="archivo-nombre">servicios.controller.js</span><span class="archivo-ruta">agendia-api/src/controllers/</span></div>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">6</span><h3 class="lectura-titulo">Buscar un servicio y avisar si no existe</h3><p class="lectura-proposito"><b>Necesidad:</b> el router pide <code>obtenerServicio</code>. <b>Dónde va:</b> debajo de <code>listarServicios</code>, dejando una línea en blanco.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 7–16</span></div></div><pre class="line-numbers" data-start="7"><code class="language-javascript">export function obtenerServicio(req, res) {
+  const id = Number(req.params.id);
+  const servicio = serviciosService.buscarPorId(id);
+
+  if (!servicio) {
+    return res.status(404).json({ error: `No existe el servicio con id ${id}` });
+  }
+
+  res.json(servicio);
+}</code></pre></div><ol class="notas"><li class="nota" data-lineas="7"><div class="nota-cabeza"><span class="nota-lineas">L7</span><code class="nota-codigo">export function obtenerServicio</code></div><p>🟨 JavaScript · Igual que <code>listarServicios</code>: se exporta con nombre y recibe petición y respuesta.</p></li><li class="nota" data-lineas="8"><div class="nota-cabeza"><span class="nota-lineas">L8</span><code class="nota-codigo">Number(req.params.id)</code></div><p>🟧 Express <code>req.params</code> · 🟨 JavaScript <code>Number</code> · Leer la URL es trabajo del controlador: el id llega como texto y aquí se convierte en número antes de pasárselo al service.</p></li><li class="nota" data-lineas="9"><div class="nota-cabeza"><span class="nota-lineas">L9</span><code class="nota-codigo">serviciosService.buscarPorId(id)</code></div><p>🟪 Decisión del proyecto · El controlador ya no busca con <code>find</code>: le pide al service que lo haga.</p></li><li class="nota" data-lineas="11-13"><div class="nota-cabeza"><span class="nota-lineas">L11–13</span><code class="nota-codigo">if (!servicio) { return res.status(404)… }</code></div><p>🟨 JavaScript <code>if</code>, <code>!</code> y <code>return</code> · 🟧 Express <code>res.status</code> · Elegir el código es trabajo del controlador: si el service no encontró nada, responde 404 y corta la función.</p></li><li class="nota" data-lineas="15"><div class="nota-cabeza"><span class="nota-lineas">L15</span><code class="nota-codigo">res.json(servicio)</code></div><p>🟧 Express · Si existe, responde el servicio con código 200.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><div class="consola"><div class="consola-head">Navegador y terminal</div><ol><li class="in">http://localhost:3000/api/servicios</li><li class="out">Los cuatro servicios, como en la Clase 1.</li><li class="in">http://localhost:3000/api/servicios/2</li><li class="out">Código 500; TypeError: serviciosService.buscarPorId is not a function</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>La lista funciona; la búsqueda pide una función nueva.</h3><p><em>is not a function</em> se lee “intentaste llamar como función algo que no lo es”: <code>serviciosService</code> no tiene <code>buscarPorId</code>, así que vale <code>undefined</code>.</p></div></div>
+            </article>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar</span><span class="archivo-nombre">servicios.service.js</span><span class="archivo-ruta">agendia-api/src/services/</span></div>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">7</span><h3 class="lectura-titulo">El service sabe buscar</h3><p class="lectura-proposito"><b>Necesidad:</b> el controlador pide <code>buscarPorId</code> y el service no la tiene. <b>Dónde va:</b> debajo de <code>listar</code>, dejando una línea en blanco.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 12–14</span></div></div><pre class="line-numbers" data-start="12"><code class="language-javascript">export function buscarPorId(id) {
+  return servicios.find((s) => s.id === id);
+}</code></pre></div><ol class="notas"><li class="nota" data-lineas="12"><div class="nota-cabeza"><span class="nota-lineas">L12</span><code class="nota-codigo">export function buscarPorId(id)</code></div><p>🟪 Decisión del proyecto · Recibe un número, no la petición: quien la llame ya hizo la conversión.</p></li><li class="nota" data-lineas="13"><div class="nota-cabeza"><span class="nota-lineas">L13</span><code class="nota-codigo">return servicios.find((s) => s.id === id)</code></div><p>🟨 JavaScript <code>find</code> · La misma búsqueda de la Clase 1, ahora en la capa que conoce los datos. Devuelve el servicio o <code>undefined</code>, y el controlador decide qué responder.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><div class="consola"><div class="consola-head">Resultados esperados</div><ol><li class="in">http://localhost:3000/api/servicios/2</li><li class="out">{"id":2,"nombre":"Corte de raza","duracionMin":90,"precio":65000}</li><li class="in">http://localhost:3000/api/servicios/9</li><li class="out">404 · {"error":"No existe el servicio con id 9"}</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>El contrato no cambió.</h3><p>Valentina no notaría ninguna diferencia: reorganizamos todo por dentro sin romper la API.</p></div></div>
+              <details class="code-reveal" data-archivo="app.js"><summary><span><span class="code-reveal-title">app.js · como queda al terminar este momento</span><span class="code-reveal-note">12 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Editar</span><span class="code-file">app.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import express from 'express';
+import serviciosRouter from './routes/servicios.routes.js';
+
+const app = express();
+
+app.get('/api/salud', (req, res) => {
+  res.json({ estado: 'ok', servicio: 'agendia-api' });
+});
+
+app.use('/api/servicios', serviciosRouter);
+
+export default app;</code></pre></div></div></details>
+              <details class="code-reveal" data-archivo="servicios.controller.js"><summary><span><span class="code-reveal-title">servicios.controller.js · como queda al terminar este momento</span><span class="code-reveal-note">16 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Crear</span><span class="code-file">servicios.controller.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import * as serviciosService from '../services/servicios.service.js';
+
+export function listarServicios(req, res) {
+  res.json(serviciosService.listar());
+}
+
+export function obtenerServicio(req, res) {
+  const id = Number(req.params.id);
+  const servicio = serviciosService.buscarPorId(id);
+
+  if (!servicio) {
+    return res.status(404).json({ error: `No existe el servicio con id ${id}` });
+  }
+
+  res.json(servicio);
+}</code></pre></div></div></details>
+              <details class="code-reveal" data-archivo="servicios.service.js"><summary><span><span class="code-reveal-title">servicios.service.js · como queda al terminar este momento</span><span class="code-reveal-note">14 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Crear</span><span class="code-file">servicios.service.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">const servicios = [
+  { id: 1, nombre: 'Baño completo', duracionMin: 60, precio: 45000 },
+  { id: 2, nombre: 'Corte de raza', duracionMin: 90, precio: 65000 },
+  { id: 3, nombre: 'Spa relajante', duracionMin: 120, precio: 85000 },
+  { id: 4, nombre: 'Corte de uñas', duracionMin: 20, precio: 15000 },
+];
+
+export function listar() {
+  return servicios;
+}
+
+export function buscarPorId(id) {
+  return servicios.find((s) => s.id === id);
+}</code></pre></div></div></details>
+            </article>
+          </div>
+        </section>
+
+        <section class="section view" id="s8" data-accent="1" data-layout="canvas" data-escena="construccion" hidden>
+          <div class="sec-head"><span class="sec-n">Construir</span><h2 class="sec-t">Una lista para las citas</h2><p class="sec-s">El mismo molde de capas empieza vacío y ya responde por HTTP.</p></div>
+          <div class="body">
+            <p>Valentina pidió anotar “quién viene, con qué perro, qué servicio, con cuál groomer y a qué hora”. Vamos a crear el recurso <strong>citas</strong> con el mismo molde de los servicios. Primero la lista (que empieza vacía) y después el registro con <code>POST</code>, que trae algo nuevo: los datos viajan <strong>dentro</strong> de la petición.</p>
+            <div class="mision"><div class="mision-head"><span class="mision-marca">M</span><h3 class="mision-titulo">Registrar y ver una cita</h3></div><div class="mision-grid"><div class="mision-item"><span class="component-label">Para Valentina</span><p>Registrar una cita y verla en la lista.</p></div><div class="mision-item"><span class="component-label">Lo que hacemos</span><p>El recurso <code>/api/citas</code> en sus tres capas, con <code>GET</code> y <code>POST</code>.</p></div><div class="mision-item"><span class="component-label">Cómo sabemos que quedó</span><p>Postman muestra <code>201 Created</code> con la cita de Laura Gómez, y <code>GET /api/citas</code> la lista.</p></div></div></div>
+            <h3>8.1 · Modelar una cita</h3>
+            <div class="table-wrap"><table class="data-table"><thead><tr><th>Campo</th><th>Tipo</th><th>Ejemplo</th><th>Quién lo pone</th></tr></thead><tbody><tr><td><code>id</code></td><td>número</td><td><code>1</code></td><td>El service</td></tr><tr><td><code>servicioId</code></td><td>número</td><td><code>2</code> (corte de raza)</td><td>El cliente, en la petición</td></tr><tr><td><code>clienteNombre</code></td><td>texto</td><td>“Laura Gómez”</td><td>El cliente</td></tr><tr><td><code>clienteTelefono</code></td><td>texto</td><td>“3104567890”</td><td>El cliente</td></tr><tr><td><code>profesional</code></td><td>texto</td><td>“Dana”</td><td>El cliente</td></tr><tr><td><code>fechaHora</code></td><td>texto</td><td>“2026-10-31T10:00”</td><td>El cliente</td></tr><tr><td><code>estado</code></td><td>texto</td><td>“PENDIENTE”</td><td>El service: toda cita nueva empieza pendiente</td></tr><tr><td><code>notas</code></td><td>texto</td><td>“Golden retriever, se asusta con el secador”</td><td>El cliente (opcional)</td></tr></tbody></table></div>
+            <p>La cita guarda <code>servicioId</code> y no una copia del servicio: si Valentina cambia el precio del corte de raza, todas las citas ven el precio nuevo. En la Clase 3 esa relación se vuelve una tabla.</p>
+            <h3>8.2 · Montar el recurso</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar</span><span class="archivo-nombre">app.js</span><span class="archivo-ruta">agendia-api/src/</span></div>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">1</span><h3 class="lectura-titulo"><code>app.js</code> le pasa <code>/api/citas</code> a su router</h3><p class="lectura-proposito"><b>Necesidad:</b> todo lo que empiece por <code>/api/citas</code> necesita quién lo atienda. <b>Dónde va:</b> el import debajo de <code>serviciosRouter</code> y el <code>app.use</code> debajo del router de servicios.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 3 y 12</span></div></div><pre class="line-numbers" data-start="3"><code class="language-javascript">import citasRouter from './routes/citas.routes.js';
+
+app.use('/api/citas', citasRouter);</code></pre></div><ol class="notas"><li class="nota" data-lineas="3"><div class="nota-cabeza"><span class="nota-lineas">L3</span><code class="nota-codigo">import citasRouter</code></div><p>🟨 JavaScript · ⬜ Convención el nombre del archivo · Igual que <code>serviciosRouter</code>: trae el router de citas, que todavía no existe.</p></li><li class="nota" data-lineas="5"><div class="nota-cabeza"><span class="nota-lineas">L12</span><code class="nota-codigo">app.use('/api/citas', citasRouter)</code></div><p>🟧 Express · Monta el router de citas en el prefijo <code>/api/citas</code>. 🟪 Decisión del proyecto · El recurso va en plural y sin verbos, como acordamos en REST.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><div class="consola"><div class="consola-head">Salida esperada resumida</div><ol><li class="out">Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'C:\…\src\routes\citas.routes.js' imported from C:\…\src\app.js</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>El prefijo ya apunta a su router.</h3><p>Node confirma que la conexión desde <code>app.js</code> existe y pide el archivo que falta.</p></div></div>
+            </article>
+            <h3>8.3 · Repetir el patrón de capas</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Crear</span><span class="archivo-nombre">citas.routes.js</span><span class="archivo-ruta">agendia-api/src/routes/</span></div><p class="archivo-intro">Es el mismo molde de <code>servicios.routes.js</code>. Lo nuevo llegará al registrar: un método distinto de <code>GET</code>.</p>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">2</span><h3 class="lectura-titulo">La lista de citas tiene quién la atienda</h3><p class="lectura-proposito"><b>Necesidad:</b> <code>app.js</code> busca el router de citas. <b>Dónde va:</b> crea <code>citas.routes.js</code> dentro de <code>routes</code>.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 1–8</span></div></div><pre class="line-numbers" data-start="1"><code class="language-javascript">import { Router } from 'express';
+import { listarCitas } from '../controllers/citas.controller.js';
+
+const router = Router();
+
+router.get('/', listarCitas);
+
+export default router;</code></pre></div><ol class="notas"><li class="nota" data-lineas="1"><div class="nota-cabeza"><span class="nota-lineas">L1</span><code class="nota-codigo">import { Router }</code></div><p>🟧 Express · Igual que en <code>servicios.routes.js</code>.</p></li><li class="nota" data-lineas="2"><div class="nota-cabeza"><span class="nota-lineas">L2</span><code class="nota-codigo">import { listarCitas }</code></div><p>🟨 JavaScript · Trae la función que atenderá la lista. Esta vez la escribimos de una vez, porque ya sabemos que el router la necesita.</p></li><li class="nota" data-lineas="4"><div class="nota-cabeza"><span class="nota-lineas">L4</span><code class="nota-codigo">const router = Router()</code></div><p>🟧 Express · Un router nuevo, solo para citas.</p></li><li class="nota" data-lineas="6"><div class="nota-cabeza"><span class="nota-lineas">L6</span><code class="nota-codigo">router.get('/', listarCitas)</code></div><p>🟧 Express · Con el prefijo, atiende <code>GET /api/citas</code>.</p></li><li class="nota" data-lineas="8"><div class="nota-cabeza"><span class="nota-lineas">L8</span><code class="nota-codigo">export default router</code></div><p>🟨 JavaScript · Lo entrega a <code>app.js</code>.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><div class="consola"><div class="consola-head">Salida esperada resumida</div><ol><li class="out">Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'C:\…\src\controllers\citas.controller.js' imported from C:\…\src\routes\citas.routes.js</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>El router ya declara la lista.</h3><p>Ahora falta la función del controlador que la atenderá.</p></div></div>
+            </article>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Crear</span><span class="archivo-nombre">citas.controller.js</span><span class="archivo-ruta">agendia-api/src/controllers/</span></div>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">3</span><h3 class="lectura-titulo">Responder la lista</h3><p class="lectura-proposito"><b>Necesidad:</b> el router busca el controlador de citas. <b>Dónde va:</b> crea <code>citas.controller.js</code> dentro de <code>controllers</code>.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 1–5</span></div></div><pre class="line-numbers" data-start="1"><code class="language-javascript">import * as citasService from '../services/citas.service.js';
+
+export function listarCitas(req, res) {
+  res.json(citasService.listar());
+}</code></pre></div><ol class="notas"><li class="nota" data-lineas="1"><div class="nota-cabeza"><span class="nota-lineas">L1</span><code class="nota-codigo">import * as citasService</code></div><p>🟨 JavaScript · Igual que en el controlador de servicios: todas las funciones del service de citas en un solo objeto.</p></li><li class="nota" data-lineas="3-5"><div class="nota-cabeza"><span class="nota-lineas">L3–5</span><code class="nota-codigo">listarCitas</code></div><p>🟧 Express <code>(req, res)</code> y <code>res.json</code> · Le pide la lista al service y la responde con código 200.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><div class="consola"><div class="consola-head">Salida esperada resumida</div><ol><li class="out">Error [ERR_MODULE_NOT_FOUND]: Cannot find module 'C:\…\src\services\citas.service.js' imported from C:\…\src\controllers\citas.controller.js</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>El recorrido llega hasta la última capa.</h3><p>El controlador pide el service de citas.</p></div></div>
+            </article>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Crear</span><span class="archivo-nombre">citas.service.js</span><span class="archivo-ruta">agendia-api/src/services/</span></div><p class="archivo-intro">Aquí vive la agenda de Huellitas. Por ahora, en un arreglo que empieza vacío: Agendia arranca sin citas y se van sumando a medida que la recepcionista las registra.</p>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">4</span><h3 class="lectura-titulo">Un lugar para guardar las citas</h3><p class="lectura-proposito"><b>Necesidad:</b> el controlador busca el service de citas. <b>Dónde va:</b> crea <code>citas.service.js</code> dentro de <code>services</code>.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 1–5</span></div></div><pre class="line-numbers" data-start="1"><code class="language-javascript">const citas = [];
+
+export function listar() {
+  return citas;
+}</code></pre></div><ol class="notas"><li class="nota" data-lineas="1"><div class="nota-cabeza"><span class="nota-lineas">L1</span><code class="nota-codigo">const citas = []</code></div><p>🟨 JavaScript · 🟪 Decisión del proyecto · Un arreglo vacío donde se guardarán las citas mientras el servidor esté encendido. Es <code>const</code> porque la variable siempre apunta al mismo arreglo; lo que cambia es su contenido.</p></li><li class="nota" data-lineas="3-5"><div class="nota-cabeza"><span class="nota-lineas">L3–5</span><code class="nota-codigo">listar()</code></div><p>🟪 Decisión del proyecto · Devuelve todas las citas. Mismo nombre que en el service de servicios: cada service ofrece las mismas operaciones básicas.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><div class="consola"><div class="consola-head">Navegador</div><ol><li class="in">http://localhost:3000/api/citas</li><li class="out">[]</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>Un arreglo vacío es una respuesta correcta.</h3><p>Agendia funciona y todavía no hay citas.</p></div></div>
+            </article>
+            <h3>8.4 · Abrir Postman</h3>
+            <div class="definicion"><div class="def-tecnica"><span class="def-termino">Postman</span><p>Aplicación para construir, enviar y guardar peticiones HTTP, y ver la respuesta completa: código, encabezados y cuerpo.</p></div><div class="def-vida"><p>Es como el formulario de prueba que llena el notario antes de abrir la ventanilla al público: puedes probar cada trámite sin esperar a que exista la página web.</p></div></div>
+            <ol class="checklist"><li>Abre Postman. Si te pide iniciar sesión, puedes usar tu cuenta o seguir sin ella.</li><li>Clic en <strong>New</strong> → <strong>HTTP</strong> (o el <code>+</code> de las pestañas).</li><li>Deja el método en <strong>GET</strong> y escribe <code>http://localhost:3000/api/citas</code>.</li><li>Clic en <strong>Send</strong>.</li></ol>
+            <div class="consola"><div class="consola-head">Salida esperada en Postman</div><ol><li class="out">Status: 200 OK</li><li class="out">Body: []</li></ol></div><p>Postman muestra el código arriba a la derecha de la respuesta. Desde hoy, ese número es lo primero que miras.</p>
+          </div>
+        </section>
+
+        <section class="section view" id="s9" data-accent="1" data-layout="canvas" data-escena="construccion" hidden>
+          <div class="sec-head"><span class="sec-n">Construir</span><h2 class="sec-t">Registrar una cita con POST</h2><p class="sec-s">El cuerpo viaja desde Postman hasta el service y vuelve como una cita creada.</p></div>
+          <div class="body">
+            <h3>9.1 · Exponer POST</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar</span><span class="archivo-nombre">citas.routes.js</span><span class="archivo-ruta">agendia-api/src/routes/</span></div>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">5</span><h3 class="lectura-titulo">Una ruta para registrar</h3><p class="lectura-proposito"><b>Necesidad:</b> Valentina necesita registrar citas. En REST, crear un elemento nuevo dentro de una colección es <code>POST</code> a la colección. <b>Dónde va:</b> importa <code>crearCita</code> y agrega <code>router.post</code> encima del <code>GET</code>.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 2 y 6</span></div></div><pre class="line-numbers" data-start="2"><code class="language-javascript">import { crearCita, listarCitas } from '../controllers/citas.controller.js';
+
+router.post('/', crearCita);</code></pre></div><ol class="notas"><li class="nota" data-lineas="2"><div class="nota-cabeza"><span class="nota-lineas">L2</span><code class="nota-codigo">{ crearCita, listarCitas }</code></div><p>🟨 JavaScript · Dentro de las llaves se importan varias exportaciones con nombre, separadas por coma.</p></li><li class="nota" data-lineas="4"><div class="nota-cabeza"><span class="nota-lineas">L6</span><code class="nota-codigo">router.post('/', crearCita)</code></div><p>🟧 Express · La misma URL atiende dos cosas distintas según el método: <code>GET</code> lista y <code>POST</code> crea. La URL nombra el recurso y el método dice la acción.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><div class="consola"><div class="consola-head">Salida esperada resumida</div><ol><li class="out">SyntaxError: The requested module '../controllers/citas.controller.js' does not provide an export named 'crearCita'</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>La ruta ya exige su controlador.</h3><p>La exportación con nombre todavía no existe.</p></div></div>
+            </article>
+            <h3>9.2 · Recibir el cuerpo</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar</span><span class="archivo-nombre">citas.controller.js</span><span class="archivo-ruta">agendia-api/src/controllers/</span></div>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">6</span><h3 class="lectura-titulo">El controlador recibe la cita y responde 201</h3><p class="lectura-proposito"><b>Necesidad:</b> el router pide <code>crearCita</code>. <b>Dónde va:</b> debajo del import y encima de <code>listarCitas</code>.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 3–6</span></div></div><pre class="line-numbers" data-start="3"><code class="language-javascript">export function crearCita(req, res) {
+  const cita = citasService.crear(req.body);
+  res.status(201).json(cita);
+}</code></pre></div><ol class="notas"><li class="nota" data-lineas="3"><div class="nota-cabeza"><span class="nota-lineas">L3</span><code class="nota-codigo">export function crearCita(req, res)</code></div><p>🟨 JavaScript · Igual que las demás funciones del controlador.</p></li><li class="nota" data-lineas="4"><div class="nota-cabeza"><span class="nota-lineas">L4</span><code class="nota-codigo">citasService.crear(req.body)</code></div><p>🟧 Express <code>req.body</code> · 🟪 Decisión del proyecto <code>crear</code> · <code>req.body</code> es el cuerpo de la petición: los datos que envía el cliente. El controlador se los pasa al service, que sabe cómo se arma una cita.</p></li><li class="nota" data-lineas="5"><div class="nota-cabeza"><span class="nota-lineas">L5</span><code class="nota-codigo">res.status(201).json(cita)</code></div><p>🟧 Express · Responde <strong>201 Created</strong> con la cita ya guardada, para que el cliente vea el <code>id</code> que le tocó.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><p class="build-step-purpose">En Postman: <strong>POST</strong>, <code>http://localhost:3000/api/citas</code>, <strong>Body → raw → JSON</strong>.</p><div class="code-block"><div class="code-head"><div><span class="code-context">Cuerpo JSON</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-json">{
+  "servicioId": 2,
+  "clienteNombre": "Laura Gómez",
+  "clienteTelefono": "3104567890",
+  "profesional": "Dana",
+  "fechaHora": "2026-10-31T10:00",
+  "notas": "Golden retriever, se asusta con el secador"
+}</code></pre></div><div class="consola"><div class="consola-head">Salida esperada</div><ol><li class="out">Status 500 Internal Server Error</li><li class="out">TypeError: citasService.crear is not a function</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>La petición llegó hasta el controlador.</h3><p>Falla porque el service todavía no sabe crear.</p></div></div>
+            </article>
+            <h3>9.3 · Aplicar la regla del negocio</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar</span><span class="archivo-nombre">citas.service.js</span><span class="archivo-ruta">agendia-api/src/services/</span></div>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">7</span><h3 class="lectura-titulo">El service arma la cita y la guarda</h3><p class="lectura-proposito"><b>Necesidad:</b> el controlador pide <code>crear</code>. Toda cita nueva empieza pendiente. <b>Dónde va:</b> agrega <code>siguienteId</code> debajo del arreglo y escribe <code>crear</code> encima de <code>listar</code>.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 2 y 4–18</span></div></div><pre class="line-numbers" data-start="2"><code class="language-javascript">let siguienteId = 1;
+
+export function crear(datos) {
+  const cita = {
+    id: siguienteId,
+    servicioId: datos.servicioId,
+    clienteNombre: datos.clienteNombre,
+    clienteTelefono: datos.clienteTelefono,
+    profesional: datos.profesional,
+    fechaHora: datos.fechaHora,
+    estado: 'PENDIENTE',
+    notas: datos.notas,
+  };
+  siguienteId++;
+  citas.push(cita);
+  return cita;
+}</code></pre></div><ol class="notas"><li class="nota" data-lineas="2"><div class="nota-cabeza"><span class="nota-lineas">L2</span><code class="nota-codigo">let siguienteId = 1</code></div><p>🟨 JavaScript <code>let</code> · 🟪 Decisión del proyecto · El número que recibirá la próxima cita. Es <code>let</code> porque su valor cambia. En la Clase 3 la base de datos asignará los ids sola.</p></li><li class="nota" data-lineas="4"><div class="nota-cabeza"><span class="nota-lineas">L4</span><code class="nota-codigo">export function crear(datos)</code></div><p>🟪 Decisión del proyecto · Recibe los datos que mandó el cliente. El service no sabe que vinieron por HTTP.</p></li><li class="nota" data-lineas="5-14"><div class="nota-cabeza"><span class="nota-lineas">L5–14</span><code class="nota-codigo">const cita = { … }</code></div><p>🟨 JavaScript objeto literal · Arma la cita campo por campo. Copiamos solo los campos esperados: si el cliente manda algo de más, no entra.</p></li><li class="nota" data-lineas="6"><div class="nota-cabeza"><span class="nota-lineas">L6</span><code class="nota-codigo">id: siguienteId</code></div><p>🟪 Decisión del proyecto · El id lo pone el servidor, nunca el cliente: así no se repite.</p></li><li class="nota" data-lineas="12"><div class="nota-cabeza"><span class="nota-lineas">L12</span><code class="nota-codigo">estado: 'PENDIENTE'</code></div><p>🟪 Decisión del proyecto · La regla de Valentina vive aquí, en el service: toda cita nueva empieza pendiente, sin importar lo que envíe el cliente.</p></li><li class="nota" data-lineas="15"><div class="nota-cabeza"><span class="nota-lineas">L15</span><code class="nota-codigo">siguienteId++</code></div><p>🟨 JavaScript <code>++</code> · Suma 1 a <code>siguienteId</code> para que la próxima cita reciba el siguiente número.</p></li><li class="nota" data-lineas="16"><div class="nota-cabeza"><span class="nota-lineas">L16</span><code class="nota-codigo">citas.push(cita)</code></div><p>🟨 JavaScript <code>push</code> · Agrega la cita al final del arreglo. Desde este momento, <code>listar()</code> la incluye.</p></li><li class="nota" data-lineas="17"><div class="nota-cabeza"><span class="nota-lineas">L17</span><code class="nota-codigo">return cita</code></div><p>🟨 JavaScript · Devuelve la cita guardada al controlador, que la responde con 201.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><p class="build-step-purpose">Envía otra vez el POST de Postman.</p><div class="consola"><div class="consola-head">Salida esperada</div><ol><li class="out">Status 500 Internal Server Error</li><li class="out">TypeError: Cannot read properties of undefined (reading 'servicioId')</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3><code>req.body</code> todavía vale <code>undefined</code>.</h3><p>Postman sí envió el JSON, pero Express no lee el cuerpo de las peticiones a menos que se lo pidas.</p></div></div>
+            </article>
+            <h3>9.4 · Enseñar a Express a leer JSON</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar</span><span class="archivo-nombre">app.js</span><span class="archivo-ruta">agendia-api/src/</span></div>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">8</span><h3 class="lectura-titulo">Express aprende a leer JSON</h3><p class="lectura-proposito"><b>Necesidad:</b> <code>req.body</code> llega <code>undefined</code> aunque Postman envía la cita. <b>Dónde va:</b> debajo de <code>const app = express();</code>, antes de las rutas.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Línea 7</span></div></div><pre class="line-numbers" data-start="7"><code class="language-javascript">app.use(express.json());</code></pre></div><ol class="notas"><li class="nota" data-lineas="7"><div class="nota-cabeza"><span class="nota-lineas">L7</span><code class="nota-codigo">app.use(express.json())</code></div><p>🟧 Express · <code>express.json()</code> crea un middleware: una función que Express ejecuta con cada petición antes de llegar a la ruta. Lee peticiones con <code>Content-Type: application/json</code>, convierte el cuerpo en un objeto de JavaScript y lo deja en <code>req.body</code>. En Express 5, <code>req.body</code> vale <code>undefined</code> hasta que un middleware lo llena.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><p class="build-step-purpose">Envía el POST una vez más y luego consulta la lista.</p><div class="consola"><div class="consola-head">Salida esperada en Postman</div><ol><li class="out">Status: 201 Created</li><li class="out">{"id":1,"servicioId":2,"clienteNombre":"Laura Gómez","clienteTelefono":"3104567890","profesional":"Dana","fechaHora":"2026-10-31T10:00","estado":"PENDIENTE","notas":"Golden retriever, se asusta con el secador"}</li><li class="in">GET http://localhost:3000/api/citas</li><li class="out">200 OK · un arreglo con la cita de Laura Gómez</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>El cuerpo ya atraviesa las capas.</h3><p>El service asigna el id y el estado, guarda la cita y el controlador responde 201.</p></div></div>
+              <aside class="callout" data-tone="warning"><span class="callout-icon">!</span><div><h3>Quítala y mira</h3><p>Borra la línea <code>siguienteId++</code>, guarda y envía dos <code>POST</code>. Las dos citas responden <code>"id": 1</code>. Nada falla, pero ahora no hay forma de saber cuál es cuál: confirmar “la cita 1” sería confirmar cualquiera de las dos. Vuelve a escribir la línea.</p></div></aside>
+            </article>
+            <aside class="callout" data-tone="warning"><span class="callout-icon">!</span><div><h3>Ojo técnico</h3><p>Si escribes <code>app.use(express.json())</code> debajo de los <code>app.use</code> de las rutas, el <code>POST</code> vuelve a responder 500: Express ejecuta los <code>app.use</code> en el orden en que aparecen, y la petición llega a la ruta antes de que alguien lea el cuerpo. Y si en Postman olvidas elegir <strong>JSON</strong> (queda en <strong>Text</strong>), el cuerpo llega como texto, <code>express.json()</code> no lo lee y <code>req.body</code> sigue <code>undefined</code>.</p></div></aside>
+            <div class="micro-task"><span class="component-label">Para pensar</span><p class="micro-task-q">Envías el mismo <code>POST</code> de Laura Gómez tres veces seguidas. ¿Cuántas citas hay en <code>GET /api/citas</code> y qué ids tienen?</p><details class="micro-reveal"><summary>Comprobar</summary><p class="micro-answer">Cuatro (la primera más tres), con ids distintos. <code>POST</code> no es idempotente: cada envío crea un registro nuevo. Por eso en la Clase 3 la regla “no cruzar citas del mismo profesional” será tan importante: hoy nada impide registrar a Dana dos veces a la misma hora.</p></details></div>
+          </div>
+        </section>
+
+        <section class="section view" id="s10" data-accent="1" data-layout="canvas" data-escena="construccion" hidden>
+          <div class="sec-head"><span class="sec-n">Construir</span><h2 class="sec-t">La petición completa y el punto de rescate</h2><p class="sec-s">El recorrido ya funciona; estos son los cuatro archivos completos del momento.</p></div>
+          <div class="body">
+            <h3>10.1 · Seguir la traza</h3>
+            <div class="code-block"><div class="code-head"><div><span class="code-context">Traza de POST /api/citas</span></div></div><pre><code class="language-plaintext">Postman envía: POST /api/citas
+Content-Type: application/json
+Cuerpo: {"servicioId":2,"clienteNombre":"Laura Gómez", …}
+↓
+app.js · express.json()         → req.body se vuelve un objeto
+↓
+app.js · app.use('/api/citas') → entrega la petición a citasRouter con la URL '/'
+↓
+citas.routes.js                → router.post('/') llama a crearCita(req, res)
+↓
+citas.controller.js            → citasService.crear(req.body)
+↓
+citas.service.js               → crea id 1, estado PENDIENTE, incrementa el id y guarda
+↓
+citas.controller.js            → res.status(201).json(cita)
+↓
+Postman recibe: 201 Created + la cita en JSON</code></pre></div>
+            <h3>10.2 · Copiar el estado completo</h3>
+            <details class="code-reveal" data-archivo="app.js"><summary><span><span class="code-reveal-title">app.js · versión final de hoy</span><span class="code-reveal-note">16 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Editar</span><span class="code-file">app.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import express from 'express';
+import serviciosRouter from './routes/servicios.routes.js';
+import citasRouter from './routes/citas.routes.js';
+
+const app = express();
+
+app.use(express.json());
+
+app.get('/api/salud', (req, res) => {
+  res.json({ estado: 'ok', servicio: 'agendia-api' });
+});
+
+app.use('/api/servicios', serviciosRouter);
+app.use('/api/citas', citasRouter);
+
+export default app;</code></pre></div></div></details>
+            <details class="code-reveal" data-archivo="citas.routes.js"><summary><span><span class="code-reveal-title">citas.routes.js · como queda al terminar este momento</span><span class="code-reveal-note">9 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Crear</span><span class="code-file">citas.routes.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import { Router } from 'express';
+import { crearCita, listarCitas } from '../controllers/citas.controller.js';
+
+const router = Router();
+
+router.post('/', crearCita);
+router.get('/', listarCitas);
+
+export default router;</code></pre></div></div></details>
+            <details class="code-reveal" data-archivo="citas.controller.js"><summary><span><span class="code-reveal-title">citas.controller.js · como queda al terminar este momento</span><span class="code-reveal-note">10 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Crear</span><span class="code-file">citas.controller.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import * as citasService from '../services/citas.service.js';
+
+export function crearCita(req, res) {
+  const cita = citasService.crear(req.body);
+  res.status(201).json(cita);
+}
+
+export function listarCitas(req, res) {
+  res.json(citasService.listar());
+}</code></pre></div></div></details>
+            <details class="code-reveal" data-archivo="citas.service.js"><summary><span><span class="code-reveal-title">citas.service.js · como queda al terminar este momento</span><span class="code-reveal-note">22 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Crear</span><span class="code-file">citas.service.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">const citas = [];
+let siguienteId = 1;
+
+export function crear(datos) {
+  const cita = {
+    id: siguienteId,
+    servicioId: datos.servicioId,
+    clienteNombre: datos.clienteNombre,
+    clienteTelefono: datos.clienteTelefono,
+    profesional: datos.profesional,
+    fechaHora: datos.fechaHora,
+    estado: 'PENDIENTE',
+    notas: datos.notas,
+  };
+  siguienteId++;
+  citas.push(cita);
+  return cita;
+}
+
+export function listar() {
+  return citas;
+}</code></pre></div></div></details>
+          </div>
+        </section>
+
+        <section class="section view" id="s11" data-accent="1" data-layout="canvas" data-escena="construccion" hidden>
+          <div class="sec-head"><span class="sec-n">Construir</span><h2 class="sec-t">Ver una cita por id</h2><p class="sec-s">El patrón de servicios se reutiliza en las tres capas.</p></div>
+          <div class="body">
+            <p>Valentina ya puede registrar. Ahora pidió tres cosas más: ver una cita en particular, <strong>confirmarla o cancelarla</strong> cuando el cliente responda, y borrar una anotada por error. Las tres trabajan sobre <strong>una</strong> cita, así que todas usan <code>/api/citas/:id</code>. Cada paso toca las tres capas, en el orden en que se piensa una regla: qué hace el service, cómo responde el controlador y qué ruta lo expone.</p>
+            <div class="mision"><div class="mision-head"><span class="mision-marca">M</span><h3 class="mision-titulo">Trabajar con una cita</h3></div><div class="mision-grid"><div class="mision-item"><span class="component-label">Para Valentina</span><p>Confirmar la cita de Laura cuando conteste el WhatsApp, o borrarla si fue un error.</p></div><div class="mision-item"><span class="component-label">Lo que hacemos</span><p><code>GET /api/citas/:id</code>, <code>PATCH /api/citas/:id</code> y <code>DELETE /api/citas/:id</code>.</p></div><div class="mision-item"><span class="component-label">Cómo sabemos que quedó</span><p>Postman muestra <code>200</code> con <code>"estado": "CONFIRMADA"</code> y luego <code>204 No Content</code> al eliminar.</p></div></div></div>
+            <h3>11.1 · Completar las tres capas</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar tres archivos</span><span class="archivo-nombre">Ver una cita</span><span class="archivo-ruta">agendia-api/src/services/ · controllers/ · routes/</span></div><p class="archivo-intro">La recepcionista abre la cita 1 para ver los datos del perro. Es el mismo patrón de <code>GET /api/servicios/:id</code>.</p>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">1</span><h3 class="lectura-titulo">Ver una cita</h3><p class="lectura-proposito"><b>Necesidad:</b> abrir una cita individual. <b>Dónde va:</b> agrega <code>buscarPorId</code> al service, <code>obtenerCita</code> al controlador, importa la función y registra <code>GET /:id</code> en las rutas.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Tres archivos</span></div></div><pre><code class="language-javascript">// citas.service.js · al final
+export function buscarPorId(id) {
+  return citas.find((c) => c.id === id);
+}
+
+// citas.controller.js · al final
+export function obtenerCita(req, res) {
+  const id = Number(req.params.id);
+  const cita = citasService.buscarPorId(id);
+
+  if (!cita) {
+    return res.status(404).json({ error: `No existe la cita con id ${id}` });
+  }
+
+  res.json(cita);
+}
+
+// citas.routes.js · import y ruta
+import { crearCita, listarCitas, obtenerCita } from '../controllers/citas.controller.js';
+router.get('/:id', obtenerCita);</code></pre></div><ol class="notas"><li class="nota" data-lineas="2-4"><div class="nota-cabeza"><span class="nota-lineas">Service L24–26</span><code class="nota-codigo">buscarPorId</code></div><p>🟨 JavaScript <code>find</code> · Igual que en <code>servicios.service.js</code>: devuelve la cita con ese id o <code>undefined</code>. La <code>c</code> es el nombre corto de cada cita mientras <code>find</code> recorre el arreglo (⬜ convención).</p></li><li class="nota" data-lineas="7-16"><div class="nota-cabeza"><span class="nota-lineas">Controller L12–21</span><code class="nota-codigo">obtenerCita</code></div><p>🟧 Express <code>req.params</code>, <code>res.status</code> · Igual que <code>obtenerServicio</code>: convierte el id con <code>Number</code>, le pide la cita al service y responde 404 con el id, o 200 con la cita.</p></li><li class="nota" data-lineas="19"><div class="nota-cabeza"><span class="nota-lineas">Rutas L2</span><code class="nota-codigo">obtenerCita</code></div><p>🟨 JavaScript · Suma <code>obtenerCita</code> a lo que se importa del controlador.</p></li><li class="nota" data-lineas="20"><div class="nota-cabeza"><span class="nota-lineas">Rutas L8</span><code class="nota-codigo">router.get('/:id', obtenerCita)</code></div><p>🟧 Express · Atiende <code>GET /api/citas/1</code>.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><p class="build-step-purpose">Envía el <code>POST</code> de Laura Gómez. Luego consulta dos ids.</p><div class="consola"><div class="consola-head">Resultados esperados</div><ol><li class="in">GET http://localhost:3000/api/citas/1</li><li class="out">200 OK · la cita de Laura Gómez con "estado": "PENDIENTE"</li><li class="in">GET http://localhost:3000/api/citas/7</li><li class="out">404 Not Found · {"error":"No existe la cita con id 7"}</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>Una URL, dos resultados explícitos.</h3><p>El service informa si encontró la cita y el controlador traduce ese resultado a 200 o 404.</p></div></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section view" id="s12" data-accent="1" data-layout="canvas" data-escena="construccion" hidden>
+          <div class="sec-head"><span class="sec-n">Construir</span><h2 class="sec-t">Confirmar y eliminar una cita</h2></div>
+          <div class="body">
+            <p>Para confirmar la cita solo cambia <strong>un campo</strong>: <code>estado</code>. <code>PATCH</code> envía solo lo que cambia; <code>PUT</code> reemplaza la cita completa y obliga a reenviar todos los campos.</p>
+            <div class="momento-ia"><div class="momento-ia-head"><span class="momento-ia-titulo">Momento IA</span><span class="ia-nivel">Nivel 1</span><span class="ia-herramienta">Chat de Cursor · Ask</span></div><div class="momento-ia-body"><div class="ia-grid"><div><span class="component-label">Primero razonas tú</span><p>Escribe en un comentario o en tu cuaderno cuál usarías para confirmar la cita de Laura y por qué.</p></div><div class="ia-no-delega"><span class="component-label">No se delega</span><p>La decisión de qué método usa Agendia y el código del controlador.</p></div></div><div class="code-block" data-tipo="prompt"><div class="code-head"><div><span class="code-context">Prompt sugerido</span><span class="code-file">Chat de Cursor</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-plaintext">Estoy construyendo una API REST con Express para agendar citas de un spa canino. Cada cita tiene id, servicioId, clienteNombre, clienteTelefono, profesional, fechaHora, estado y notas. Quiero cambiar solo el estado de PENDIENTE a CONFIRMADA. Explícame la diferencia entre PUT y PATCH con este ejemplo, mostrando qué cuerpo enviaría en cada caso. No me escribas el código de Express.</code></pre></div><div><span class="component-label">Cómo validar la respuesta</span><p>Compárala con la página de MDN sobre <code>PATCH</code>. Si la IA dice que <code>PUT</code> “actualiza parcialmente”, está equivocada: según el estándar, <code>PUT</code> reemplaza el recurso completo.</p></div></div></div>
+            <h3>12.1 · Cambiar solo el estado</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar tres archivos</span><span class="archivo-nombre">Confirmar o cancelar</span><span class="archivo-ruta">agendia-api/src/services/ · controllers/ · routes/</span></div>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">2</span><h3 class="lectura-titulo">Confirmar o cancelar una cita</h3><p class="lectura-proposito"><b>Necesidad:</b> cuando el cliente responde el WhatsApp, la recepcionista cambia el estado. <b>Dónde va:</b> agrega <code>cambiarEstado</code> al service, <code>cambiarEstadoCita</code> al controlador y <code>PATCH /:id</code> a las rutas.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Tres archivos</span></div></div><pre><code class="language-javascript">// citas.service.js · al final
+export function cambiarEstado(id, estado) {
+  const cita = buscarPorId(id);
+  if (!cita) {
+    return undefined;
+  }
+  cita.estado = estado;
+  return cita;
+}
+
+// citas.controller.js · al final
+export function cambiarEstadoCita(req, res) {
+  const id = Number(req.params.id);
+  const cita = citasService.cambiarEstado(id, req.body.estado);
+
+  if (!cita) {
+    return res.status(404).json({ error: `No existe la cita con id ${id}` });
+  }
+
+  res.json(cita);
+}
+
+// citas.routes.js · import en varias líneas y ruta
+import {
+  crearCita,
+  listarCitas,
+  obtenerCita,
+  cambiarEstadoCita,
+} from '../controllers/citas.controller.js';
+router.patch('/:id', cambiarEstadoCita);</code></pre></div><ol class="notas"><li class="nota" data-lineas="2"><div class="nota-cabeza"><span class="nota-lineas">Service L28</span><code class="nota-codigo">cambiarEstado(id, estado)</code></div><p>🟪 Decisión del proyecto · Recibe qué cita y qué estado nuevo. No sabe de HTTP: no le importa si el estado vino de Postman o de un botón.</p></li><li class="nota" data-lineas="3"><div class="nota-cabeza"><span class="nota-lineas">Service L29</span><code class="nota-codigo">buscarPorId(id)</code></div><p>🟨 JavaScript · Reutiliza la función del paso 1 del mismo archivo, sin <code>citasService.</code> adelante, porque está en el mismo módulo. Una regla, un solo lugar.</p></li><li class="nota" data-lineas="4-6"><div class="nota-cabeza"><span class="nota-lineas">Service L30–32</span><code class="nota-codigo">if (!cita) { return undefined; }</code></div><p>🟨 JavaScript · Si no existe, devuelve <code>undefined</code> y no intenta cambiar nada. El service avisa; quien decide el 404 es el controlador.</p></li><li class="nota" data-lineas="7"><div class="nota-cabeza"><span class="nota-lineas">Service L33</span><code class="nota-codigo">cita.estado = estado</code></div><p>🟨 JavaScript asignación a una propiedad · Cambia el estado <strong>del objeto guardado en el arreglo</strong>, porque <code>find</code> devuelve el mismo objeto, no una copia. Los demás campos quedan intactos: eso es un cambio parcial.</p></li><li class="nota" data-lineas="8"><div class="nota-cabeza"><span class="nota-lineas">Service L34</span><code class="nota-codigo">return cita</code></div><p>🟨 JavaScript · Devuelve la cita ya actualizada.</p></li><li class="nota" data-lineas="13"><div class="nota-cabeza"><span class="nota-lineas">Controller L25</span><code class="nota-codigo">req.body.estado</code></div><p>🟧 Express · Del cuerpo solo se toma <code>estado</code>: aunque el cliente mande otros campos, este endpoint no los cambia.</p></li><li class="nota" data-lineas="15-19"><div class="nota-cabeza"><span class="nota-lineas">Controller L27–31</span><code class="nota-codigo">if (!cita)… res.json(cita)</code></div><p>🟧 Express · Igual que <code>obtenerCita</code>: 404 si no existe, 200 con la cita actualizada si existe.</p></li><li class="nota" data-lineas="24-29"><div class="nota-cabeza"><span class="nota-lineas">Rutas L2–7</span><code class="nota-codigo">import { … }</code></div><p>⬜ Convención · Las mismas importaciones, una por línea: se leen mejor y, al agregar una función, Git muestra una sola línea cambiada. La coma después de la última es válida en JavaScript.</p></li><li class="nota" data-lineas="30"><div class="nota-cabeza"><span class="nota-lineas">Rutas L14</span><code class="nota-codigo">router.patch('/:id', cambiarEstadoCita)</code></div><p>🟧 Express · Atiende <code>PATCH /api/citas/1</code>. La misma URL que <code>GET /api/citas/1</code>, otra acción.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><p class="build-step-purpose">Envía el POST de Laura y luego <strong>PATCH</strong> a <code>http://localhost:3000/api/citas/1</code>.</p><div class="code-block"><div class="code-head"><div><span class="code-context">Body · raw · JSON</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-json">{
+  "estado": "CONFIRMADA"
+}</code></pre></div><div class="consola"><div class="consola-head">Salida esperada</div><ol><li class="out">200 OK</li><li class="out">La cita de Laura con "estado": "CONFIRMADA"</li><li class="in">GET /api/citas/1</li><li class="out">El estado sigue en "CONFIRMADA"</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>El cambio quedó guardado.</h3><p><code>PATCH</code> modificó solo <code>estado</code> y conservó los demás campos.</p></div></div>
+            </article>
+            <h3>12.2 · Eliminar sin dejar la respuesta abierta</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar tres archivos</span><span class="archivo-nombre">Eliminar una cita</span><span class="archivo-ruta">agendia-api/src/services/ · controllers/ · routes/</span></div>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">3</span><h3 class="lectura-titulo">Eliminar una cita anotada por error</h3><p class="lectura-proposito"><b>Necesidad:</b> la recepcionista registró dos veces la misma cita y quiere borrar una. <b>Dónde va:</b> agrega <code>eliminar</code> al service, <code>eliminarCita</code> al controlador y <code>DELETE /:id</code> a las rutas.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Tres archivos</span></div></div><pre><code class="language-javascript">// citas.service.js · al final
+export function eliminar(id) {
+  const posicion = citas.findIndex((c) => c.id === id);
+  if (posicion === -1) {
+    return false;
+  }
+  citas.splice(posicion, 1);
+  return true;
+}
+
+// citas.controller.js · al final
+export function eliminarCita(req, res) {
+  const id = Number(req.params.id);
+  const eliminada = citasService.eliminar(id);
+
+  if (!eliminada) {
+    return res.status(404).json({ error: `No existe la cita con id ${id}` });
+  }
+
+  res.status(204).end();
+}
+
+// citas.routes.js · import y ruta
+  eliminarCita,
+router.delete('/:id', eliminarCita);</code></pre></div><ol class="notas"><li class="nota" data-lineas="3"><div class="nota-cabeza"><span class="nota-lineas">Service L38</span><code class="nota-codigo">findIndex</code></div><p>🟨 JavaScript · Como <code>find</code>, pero devuelve la <strong>posición</strong> de la cita en el arreglo (0, 1, 2…) en lugar de la cita. Si no la encuentra, devuelve <code>-1</code>. Para sacar algo de un arreglo necesitamos saber dónde está.</p></li><li class="nota" data-lineas="4-6"><div class="nota-cabeza"><span class="nota-lineas">Service L39–41</span><code class="nota-codigo">posicion === -1</code></div><p>🟨 JavaScript <code>===</code> · Si la cita no existe, avisa con <code>false</code> y no toca el arreglo.</p></li><li class="nota" data-lineas="7"><div class="nota-cabeza"><span class="nota-lineas">Service L42</span><code class="nota-codigo">citas.splice(posicion, 1)</code></div><p>🟨 JavaScript <code>splice</code> · Quita elementos del arreglo original: desde <code>posicion</code>, <code>1</code> elemento. La cita deja de existir.</p></li><li class="nota" data-lineas="8"><div class="nota-cabeza"><span class="nota-lineas">Service L43</span><code class="nota-codigo">return true</code></div><p>🟪 Decisión del proyecto · Avisa que sí se eliminó. El service responde “sí” o “no”; el controlador lo traduce a HTTP.</p></li><li class="nota" data-lineas="14"><div class="nota-cabeza"><span class="nota-lineas">Controller L36</span><code class="nota-codigo">citasService.eliminar(id)</code></div><p>🟪 Decisión del proyecto · Guarda el <code>true</code> o <code>false</code> del service con un nombre que se lee como pregunta: ¿fue eliminada?</p></li><li class="nota" data-lineas="16-18"><div class="nota-cabeza"><span class="nota-lineas">Controller L38–40</span><code class="nota-codigo">if (!eliminada)…404</code></div><p>🟧 Express · Si no se eliminó porque no existía, responde 404 con el id.</p></li><li class="nota" data-lineas="20"><div class="nota-cabeza"><span class="nota-lineas">Controller L42</span><code class="nota-codigo">res.status(204).end()</code></div><p>🟧 Express <code>res.end</code> · Responde <strong>204 No Content</strong>: salió bien y no hay nada que mostrar, porque la cita ya no existe. <code>end()</code> cierra la respuesta sin cuerpo; aquí no se usa <code>json</code> porque no hay nada que enviar.</p></li><li class="nota" data-lineas="24"><div class="nota-cabeza"><span class="nota-lineas">Rutas L7</span><code class="nota-codigo">eliminarCita,</code></div><p>🟨 JavaScript · Suma la función a la importación.</p></li><li class="nota" data-lineas="25"><div class="nota-cabeza"><span class="nota-lineas">Rutas L16</span><code class="nota-codigo">router.delete('/:id', eliminarCita)</code></div><p>🟧 Express <code>router.delete</code> · Atiende <code>DELETE /api/citas/1</code>.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><p class="build-step-purpose">Envía el POST de Laura y luego prueba eliminar dos veces.</p><div class="consola"><div class="consola-head">Resultados esperados</div><ol><li class="in">DELETE http://localhost:3000/api/citas/1</li><li class="out">204 No Content · sin cuerpo</li><li class="in">DELETE http://localhost:3000/api/citas/1</li><li class="out">404 · {"error":"No existe la cita con id 1"}</li><li class="in">GET http://localhost:3000/api/citas</li><li class="out">200 OK · []</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>La cita desaparece y la respuesta termina.</h3><p>El segundo intento ya reconoce que el recurso no existe.</p></div></div>
+              <aside class="callout" data-tone="warning"><span class="callout-icon">!</span><div><h3>Quítala y mira</h3><p>Cambia <code>res.status(204).end()</code> por <code>res.status(204);</code>, guarda, crea una cita y envíale un <code>DELETE</code>. Postman se queda en <strong>Sending request…</strong>: <code>status</code> solo prepara el código; <code>end</code> (o <code>json</code>) es lo que envía. Vuelve a escribir <code>.end()</code>.</p></div></aside>
+              <aside class="callout" data-tone="warning"><span class="callout-icon">!</span><div><h3>Quítala y mira</h3><p>Borra el <code>if (posicion === -1)</code>, crea dos citas y envía <code>DELETE /api/citas/99</code>. Postman responde 204 y desaparece la segunda cita. Sin el <code>if</code>, <code>findIndex</code> devuelve <code>-1</code> y <code>splice(-1, 1)</code> borra el último elemento. Vuelve a escribirlo.</p></div></aside>
+            </article>
+            <h3>12.3 · Copiar la versión final</h3>
+            <details class="code-reveal" data-archivo="citas.routes.js"><summary><span><span class="code-reveal-title">citas.routes.js · versión final de hoy</span><span class="code-reveal-note">18 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Editar</span><span class="code-file">citas.routes.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import { Router } from 'express';
+import {
+  crearCita,
+  listarCitas,
+  obtenerCita,
+  cambiarEstadoCita,
+  eliminarCita,
+} from '../controllers/citas.controller.js';
+
+const router = Router();
+
+router.post('/', crearCita);
+router.get('/', listarCitas);
+router.get('/:id', obtenerCita);
+router.patch('/:id', cambiarEstadoCita);
+router.delete('/:id', eliminarCita);
+
+export default router;</code></pre></div></div></details>
+            <details class="code-reveal" data-archivo="citas.controller.js"><summary><span><span class="code-reveal-title">citas.controller.js · versión final de hoy</span><span class="code-reveal-note">43 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Editar</span><span class="code-file">citas.controller.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import * as citasService from '../services/citas.service.js';
+
+export function crearCita(req, res) {
+  const cita = citasService.crear(req.body);
+  res.status(201).json(cita);
+}
+
+export function listarCitas(req, res) {
+  res.json(citasService.listar());
+}
+
+export function obtenerCita(req, res) {
+  const id = Number(req.params.id);
+  const cita = citasService.buscarPorId(id);
+
+  if (!cita) {
+    return res.status(404).json({ error: `No existe la cita con id ${id}` });
+  }
+
+  res.json(cita);
+}
+
+export function cambiarEstadoCita(req, res) {
+  const id = Number(req.params.id);
+  const cita = citasService.cambiarEstado(id, req.body.estado);
+
+  if (!cita) {
+    return res.status(404).json({ error: `No existe la cita con id ${id}` });
+  }
+
+  res.json(cita);
+}
+
+export function eliminarCita(req, res) {
+  const id = Number(req.params.id);
+  const eliminada = citasService.eliminar(id);
+
+  if (!eliminada) {
+    return res.status(404).json({ error: `No existe la cita con id ${id}` });
+  }
+
+  res.status(204).end();
+}</code></pre></div></div></details>
+            <details class="code-reveal" data-archivo="citas.service.js"><summary><span><span class="code-reveal-title">citas.service.js · versión final de hoy</span><span class="code-reveal-note">44 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Editar</span><span class="code-file">citas.service.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">const citas = [];
+let siguienteId = 1;
+
+export function crear(datos) {
+  const cita = {
+    id: siguienteId,
+    servicioId: datos.servicioId,
+    clienteNombre: datos.clienteNombre,
+    clienteTelefono: datos.clienteTelefono,
+    profesional: datos.profesional,
+    fechaHora: datos.fechaHora,
+    estado: 'PENDIENTE',
+    notas: datos.notas,
+  };
+  siguienteId++;
+  citas.push(cita);
+  return cita;
+}
+
+export function listar() {
+  return citas;
+}
+
+export function buscarPorId(id) {
+  return citas.find((c) => c.id === id);
+}
+
+export function cambiarEstado(id, estado) {
+  const cita = buscarPorId(id);
+  if (!cita) {
+    return undefined;
+  }
+  cita.estado = estado;
+  return cita;
+}
+
+export function eliminar(id) {
+  const posicion = citas.findIndex((c) => c.id === id);
+  if (posicion === -1) {
+    return false;
+  }
+  citas.splice(posicion, 1);
+  return true;
+}</code></pre></div></div></details>
+          </div>
+        </section>
+
+        <section class="section view" id="s13" data-accent="1" data-layout="canvas" data-escena="prueba" hidden>
+          <div class="sec-head"><span class="sec-n">Probar</span><h2 class="sec-t">Guardar las pruebas en Postman</h2><p class="sec-s">Una colección vuelve repetible y compartible el contrato de la API.</p></div>
+          <div class="body">
+            <p>Cada vez que el servidor se reinicia, vuelves a escribir el <code>POST</code> de Laura Gómez. Y cuando un compañero clone Agendia, no sabrá qué peticiones probar. Una <strong>colección</strong> guarda las peticiones con su método, URL y cuerpo, para repetirlas en orden y compartirlas con el repositorio.</p>
+            <h3>13.1 · Crear la colección</h3>
+            <ol class="checklist"><li>En la barra lateral de Postman, <strong>Collections</strong> → <strong>+</strong> (o <strong>New → Collection</strong>) → nombre: <code>Agendia API</code>.</li><li>En cada pestaña que usaste hoy, <code>Ctrl + S</code> → ponle nombre → elige la colección <code>Agendia API</code> → <strong>Save</strong>.</li><li>Deja cinco peticiones, en este orden: <strong>Crear cita</strong> (<code>POST /api/citas</code>), <strong>Listar citas</strong> (<code>GET /api/citas</code>), <strong>Ver cita 1</strong> (<code>GET /api/citas/1</code>), <strong>Confirmar cita 1</strong> (<code>PATCH /api/citas/1</code>) y <strong>Eliminar cita 1</strong> (<code>DELETE /api/citas/1</code>).</li></ol>
+            <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><p class="build-step-purpose">Reinicia el servidor guardando cualquier archivo y ejecuta las cinco peticiones en orden con <strong>Send</strong>.</p><div class="consola"><div class="consola-head">Códigos esperados</div><ol><li class="out">201</li><li class="out">200</li><li class="out">200</li><li class="out">200</li><li class="out">204</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>El flujo completo se repite en orden.</h3><p>La colección conserva cada método, URL y cuerpo de trabajo.</p></div></div>
+            <h3>13.2 · Exportar al repositorio</h3>
+            <ol class="checklist"><li>Crea la carpeta <code>postman</code> en la raíz de <code>agendia-api</code>.</li><li>Sobre la colección: <strong>… → More → Export</strong>. Si pregunta el formato, elige <strong>Collection v2.1</strong>.</li><li>Guarda como <code>agendia-api/postman/agendia-api.postman_collection.json</code>.</li></ol>
+            <article class="archivo"><div class="archivo-ficha" data-tipo="apoyo"><span class="archivo-accion">Generado por Postman</span><span class="archivo-nombre">agendia-api.postman_collection.json</span><span class="archivo-ruta">agendia-api/postman/</span></div><p class="archivo-intro">No se escribe a mano: lo genera Postman. Basta con reconocer las partes que importan. Tu archivo puede tener líneas adicionales y otro orden de claves; es normal.</p>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">1</span><h3 class="lectura-titulo">Qué guarda la colección</h3></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Fragmento representativo</span></div></div><pre><code class="language-json">{
+  "info": {
+    "name": "Agendia API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Crear cita",
+      "request": {
+        "method": "POST",
+        "url": { "raw": "http://localhost:3000/api/citas" },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"servicioId\": 2,\n  \"clienteNombre\": \"Laura Gómez\", … }"
+        }
+      }
+    }
+  ]
+}</code></pre></div><ol class="notas"><li class="nota" data-lineas="2-5"><div class="nota-cabeza"><span class="nota-lineas">info</span><code class="nota-codigo">"info"</code></div><p>🟧 Postman · El nombre de la colección y <code>schema</code>, la versión del formato v2.1. Con esa versión, Postman, otras herramientas y los tests del taller saben leer el archivo.</p></li><li class="nota" data-lineas="6-18"><div class="nota-cabeza"><span class="nota-lineas">item</span><code class="nota-codigo">"item"</code></div><p>🟧 Postman · La lista de peticiones, en el orden en que las guardaste. Cada una tiene su nombre.</p></li><li class="nota" data-lineas="10-12"><div class="nota-cabeza"><span class="nota-lineas">request</span><code class="nota-codigo">"method" · "url"</code></div><p>🟧 Postman · El método HTTP y la dirección completa de cada petición.</p></li><li class="nota" data-lineas="13-16"><div class="nota-cabeza"><span class="nota-lineas">body</span><code class="nota-codigo">"body"</code></div><p>🟧 Postman · El cuerpo guardado como texto dentro del JSON; por eso las comillas aparecen como <code>\"</code> y los saltos como <code>\n</code>.</p></li></ol></div></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section view" id="s14" data-accent="1" data-layout="canvas" data-escena="concepto" hidden>
+          <div class="sec-head"><span class="sec-n">Persistir</span><h2 class="sec-t">Por qué la memoria no alcanza</h2><p class="sec-s">La base <code>agendia</code> queda vacía y lista para que los datos sobrevivan.</p></div>
+          <div class="body">
+            <p>Cada vez que guardabas un archivo, <code>--watch</code> reiniciaba el servidor y <strong>las citas desaparecían</strong>. En el computador de Valentina no hay <code>--watch</code>, pero los servidores se reinician siempre: una actualización, un corte de luz, un despliegue. Si eso pasa un sábado a las 9:00 a. m., Huellitas pierde la agenda del día.</p>
+            <div class="micro-task"><span class="component-label">Para pensar</span><p class="micro-task-q">El arreglo <code>citas</code> vive en la memoria del proceso de Node. ¿Qué tiene que pasar para que la agenda sobreviva a un reinicio?</p><details class="micro-reveal"><summary>Comprobar</summary><p class="micro-answer">Guardarla <strong>fuera</strong> del proceso, en algo diseñado para durar y para que varios usuarios lean y escriban al tiempo sin pisarse: una base de datos. Un archivo de texto sirve para una persona; con la recepcionista y Valentina escribiendo a la vez, se corrompe.</p></details></div>
+            <div class="definicion"><div class="def-tecnica"><span class="def-termino">Base de datos relacional</span><p>Guarda la información en <strong>tablas</strong>: cada tabla es un tipo de cosa, cada <strong>fila</strong> es un registro y cada <strong>columna</strong> un campo con un tipo fijo. Un programa aparte, el <strong>motor</strong> (PostgreSQL), la guarda en disco y responde consultas en <strong>SQL</strong>.</p></div><div class="def-vida"><p>Es el archivador de Huellitas: un cajón por tipo de documento, una carpeta por cliente y en cada carpeta los mismos campos. A diferencia del cuaderno, no deja guardar una carpeta sin los campos obligatorios, y todo el equipo lo consulta al tiempo.</p></div></div>
+            <h3>14.1 · Del objeto a la tabla</h3>
+            <div class="code-block"><div class="code-head"><div><span class="code-context">Objeto actual</span></div></div><pre><code class="language-javascript">{ id: 1, servicioId: 2, clienteNombre: 'Laura Gómez', profesional: 'Dana', estado: 'PENDIENTE' }</code></pre></div>
+            <div class="table-wrap"><table class="data-table"><caption>Fila futura de la tabla Cita</caption><thead><tr><th>id</th><th>servicioId</th><th>clienteNombre</th><th>profesional</th><th>estado</th></tr></thead><tbody><tr><td class="num">1</td><td class="num">2</td><td>Laura Gómez</td><td>Dana</td><td>PENDIENTE</td></tr></tbody></table></div>
+            <p><code>servicioId</code> apuntará a una fila de la tabla <code>Servicio</code>: un servicio tiene muchas citas (relación <strong>1 a N</strong>). Gracias a las capas, ese cambio solo tocará los services.</p>
+            <h3>14.2 · Crear la base</h3>
+            <p>Hoy solo dejamos lista la base, vacía. Las tablas las crea Prisma en la Clase 3.</p><p><strong>Desde:</strong> el menú de inicio de Windows → <strong>SQL Shell (psql)</strong>. En macOS o Linux, una terminal con <code>psql -U postgres</code>.</p>
+            <ol class="checklist"><li>Acepta con <strong>Enter</strong> los valores propuestos: servidor, base <code>postgres</code>, puerto 5432 y usuario <code>postgres</code>.</li><li>Escribe la contraseña de instalación. No se ve mientras escribes.</li></ol>
+            <div class="consola"><div class="consola-head">Conexión esperada</div><ol><li class="out">psql (18.x)</li><li class="out">postgres=#</li></ol></div>
+            <p><code>postgres=#</code> indica que estás conectada como <code>postgres</code> a la base de mantenimiento.</p>
+            <div class="code-block" data-tipo="terminal"><div class="code-head"><div><span class="code-context">SQL Shell (psql)</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-sql">CREATE DATABASE agendia;</code></pre></div><div class="consola"><div class="consola-head">Salida esperada</div><ol><li class="out">CREATE DATABASE</li></ol></div>
+            <div class="code-block" data-tipo="terminal"><div class="code-head"><div><span class="code-context">SQL Shell (psql)</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-bash">\c agendia</code></pre></div><div class="consola"><div class="consola-head">Salida esperada</div><ol><li class="out">You are now connected to database "agendia" as user "postgres".</li><li class="out">agendia=#</li></ol></div>
+            <div class="code-block" data-tipo="terminal"><div class="code-head"><div><span class="code-context">SQL Shell (psql)</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-sql">SELECT current_database();</code></pre></div><div class="consola"><div class="consola-head">Salida esperada</div><ol><li class="out">current_database · agendia · (1 row)</li></ol></div><p>Sal con <code>\q</code>.</p>
+            <ol class="notas"><li class="nota" data-lineas="1"><div class="nota-cabeza"><span class="nota-lineas">SQL</span><code class="nota-codigo">CREATE DATABASE agendia;</code></div><p>🟩 PostgreSQL · Crea una base vacía. El punto y coma termina la instrucción: sin él, psql espera más texto.</p></li><li class="nota" data-lineas="2"><div class="nota-cabeza"><span class="nota-lineas">psql</span><code class="nota-codigo">\c agendia</code></div><p>🟩 PostgreSQL · Los comandos con <code>\</code> son de psql, no de SQL, y no llevan punto y coma. <code>\c</code> cambia la conexión.</p></li><li class="nota" data-lineas="3"><div class="nota-cabeza"><span class="nota-lineas">SQL</span><code class="nota-codigo">SELECT current_database()</code></div><p>🟩 PostgreSQL · Pregunta al motor en qué base estás. Si responde <code>agendia</code>, existe y la conexión funciona.</p></li><li class="nota" data-lineas="4"><div class="nota-cabeza"><span class="nota-lineas">psql</span><code class="nota-codigo">\q</code></div><p>🟩 PostgreSQL · Sale de psql.</p></li></ol>
+            <aside class="callout" data-tone="warning"><span class="callout-icon">!</span><div><h3>Ojo técnico</h3><p>Guarda la contraseña del usuario <code>postgres</code>: en la Clase 3 va en el archivo <code>.env</code> de Agendia. Si <code>CREATE DATABASE</code> responde <em>database "agendia" already exists</em>, la base ya estaba creada: sigue con <code>\c agendia</code>. Si la contraseña no funciona, se puede cambiar reinstalando o desde pgAdmin; pide ayuda antes de la Clase 3.</p></div></aside>
+          </div>
+        </section>
+
+        <section class="section view" id="s15" data-accent="1" data-layout="canvas" data-escena="prueba" hidden>
+          <div class="sec-head"><span class="sec-n">Verificar</span><h2 class="sec-t">Guardar el avance y leer errores</h2><p class="sec-s">El repositorio conserva el trabajo y los mensajes indican qué contrato se rompió.</p></div>
+          <div class="body">
+            <h3>15.1 · Subir a GitHub</h3><p><strong>Desde:</strong> <code>agendia-api</code>. Registra el trabajo de hoy y súbelo a GitHub.</p>
+            <div class="code-block" data-tipo="terminal"><div class="code-head"><div><span class="code-context">Terminal · desde agendia-api</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-bash">git status</code></pre></div>
+            <p>Debes ver <code>src/app.js</code>, las carpetas <code>src/routes/</code>, <code>src/controllers/</code>, <code>src/services/</code> y <code>postman/</code>, y <code>src/index.js</code> modificado. <code>node_modules</code> no aparece gracias al <code>.gitignore</code> de la Clase 1.</p>
+            <div class="code-block" data-tipo="terminal"><div class="code-head"><div><span class="code-context">Terminal · desde agendia-api</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-bash">git add .
+git commit -m "feat: arquitectura en capas y CRUD de citas en memoria"
+git push</code></pre></div>
+            <div class="consola"><div class="consola-head">Salida final esperada resumida</div><ol><li class="out">To https://github.com/TU-USUARIO/agendia-api.git</li><li class="out">abc1234..def5678  main → main</li></ol></div><p><code>feat:</code> al inicio del mensaje es una convención (<em>Conventional Commits</em>) que indica que el commit agrega una funcionalidad.</p>
+            <h3>15.2 · Interpretar los mensajes</h3>
+            <div class="table-wrap"><table class="data-table"><thead><tr><th>Lo que ves</th><th>Qué significa</th><th>Cómo lo arreglas</th></tr></thead><tbody><tr><td><code>ERR_MODULE_NOT_FOUND</code></td><td>Un <code>import</code> apunta a un archivo que no existe. El mensaje dice cuál falta y quién lo pidió.</td><td>Revisa nombre, carpeta (<code>./</code> o <code>../</code>) y extensión <code>.js</code>.</td></tr><tr><td><code>does not provide an export named 'X'</code></td><td>Importas <code>X</code> con llaves y el archivo no lo exporta.</td><td>Revisa <code>export</code> y que el nombre sea idéntico.</td></tr><tr><td><code>does not provide an export named 'default'</code></td><td>Importas sin llaves y el archivo no tiene <code>export default</code>.</td><td>Agrega <code>export default</code> al archivo importado.</td></tr><tr><td><code>ReferenceError: X is not defined</code></td><td>Usas un nombre que no se declaró ni importó.</td><td>Agrega el <code>import</code> que falta.</td></tr><tr><td><code>citasService.crear is not a function</code></td><td>El service no tiene esa función o está mal escrita.</td><td>Revisa el nombre en service y controlador.</td></tr><tr><td><code>Cannot read properties of undefined</code></td><td><code>req.body</code> llegó <code>undefined</code>.</td><td><code>express.json()</code> antes de rutas y Postman en <strong>raw → JSON</strong>.</td></tr><tr><td>Postman queda en <strong>Sending request…</strong></td><td>Una ruta no termina la respuesta.</td><td>Revisa <code>res.json()</code> o <code>res.end()</code>.</td></tr><tr><td><code>Cannot POST /api/citas</code></td><td>No hay ruta para ese método y URL.</td><td>Revisa <code>router.post('/')</code> y <code>app.use('/api/citas', …)</code>.</td></tr></tbody></table></div>
+            <h3>15.3 · Mapa final</h3>
+            <div class="table-wrap"><table class="data-table"><thead><tr><th>Archivo</th><th>Ruta</th><th>Acción</th><th>Estado final</th></tr></thead><tbody><tr><td><code>index.js</code></td><td><code>agendia-api/src/</code></td><td>Reemplazar</td><td>Completo · 7 líneas</td></tr><tr><td><code>app.js</code></td><td><code>agendia-api/src/</code></td><td>Crear y editar</td><td>Completo · 16 líneas</td></tr><tr><td><code>servicios.routes.js</code></td><td><code>src/routes/</code></td><td>Crear</td><td>9 líneas</td></tr><tr><td><code>servicios.controller.js</code></td><td><code>src/controllers/</code></td><td>Crear</td><td>16 líneas</td></tr><tr><td><code>servicios.service.js</code></td><td><code>src/services/</code></td><td>Crear</td><td>14 líneas</td></tr><tr><td><code>citas.routes.js</code></td><td><code>src/routes/</code></td><td>Crear y editar</td><td>18 líneas</td></tr><tr><td><code>citas.controller.js</code></td><td><code>src/controllers/</code></td><td>Crear y editar</td><td>43 líneas</td></tr><tr><td><code>citas.service.js</code></td><td><code>src/services/</code></td><td>Crear y editar</td><td>44 líneas</td></tr><tr><td><code>agendia-api.postman_collection.json</code></td><td><code>agendia-api/postman/</code></td><td>Generado por Postman</td><td>No se edita a mano</td></tr><tr><td><code>package.json</code></td><td><code>agendia-api/</code></td><td>Sin cambios</td><td>Igual que en la Clase 1</td></tr><tr><td>Base <code>agendia</code></td><td>PostgreSQL</td><td>Crear con psql</td><td>Vacía, lista para la Clase 3</td></tr></tbody></table></div>
+            <div class="code-block"><div class="code-head"><div><span class="code-context">Estructura al terminar</span></div></div><pre><code class="language-plaintext">agendia-api/
+├── node_modules/                 (no sube a GitHub)
+├── postman/
+│   └── agendia-api.postman_collection.json
+├── src/
+│   ├── controllers/
+│   │   ├── citas.controller.js
+│   │   └── servicios.controller.js
+│   ├── routes/
+│   │   ├── citas.routes.js
+│   │   └── servicios.routes.js
+│   ├── services/
+│   │   ├── citas.service.js
+│   │   └── servicios.service.js
+│   ├── app.js
+│   └── index.js
+├── demos/
+│   └── servidor-http.js
+├── .gitignore
+├── package-lock.json
+└── package.json</code></pre></div>
+          </div>
+        </section>
+
+        <section class="section view" id="s16" data-accent="1" data-layout="canvas" data-escena="cierre" hidden>
+          <div class="sec-head"><span class="sec-n">Cierre</span><h2 class="sec-t">Lo que cambió en Agendia</h2></div>
+          <div class="body">
+            <p>Valentina pidió registrar, consultar, confirmar y borrar citas. Agendia ya lo hace, con la misma URL para cada cita y un método distinto para cada acción, y responde con códigos que cualquier cliente entiende: 201 al crear, 204 al borrar, 404 si la cita no existe.</p>
+            <ol class="ideas"><li><span><strong>REST</strong> es un contrato: la URL nombra el recurso, el método dice la acción y el código dice cómo salió.</span></li><li><span><strong>Capas:</strong> las rutas reparten, los controladores reciben y responden, y los services guardan y deciden. Cada cambio tiene un solo lugar.</span></li><li><span><strong>El cuerpo de la petición</strong> llega como texto y <code>express.json()</code> lo convierte en <code>req.body</code>, antes de las rutas.</span></li></ol>
+            <article class="correo"><div class="correo-head"><span class="correo-avatar">EA</span><div><div class="correo-remitente">Equipo de desarrollo</div><div class="correo-ruta">Para: Valentina Rojas · valentina@huellitasspa.co</div></div></div><div class="correo-asunto">Agendia ya registra citas</div><div class="correo-body"><p>Hola, Valentina:</p><p>Desde hoy Agendia puede registrar una cita (cliente, teléfono, servicio, groomer, fecha y hora, y notas sobre el perro), mostrarla, confirmarla o cancelarla cuando el cliente responda, y borrar las que se anoten por error. Toda cita nueva queda pendiente hasta que la confirmen.</p><p>Una advertencia honesta: todavía guardamos las citas en la memoria del servidor, así que si se reinicia, se pierden. La próxima semana las pasamos a una base de datos y agregamos la regla que más te importa: que Dana no pueda tener dos perros a la misma hora.</p><p>Saludos,<br>Equipo Agendia</p></div></article>
+            <h3>16.1 · Lo que queda abierto</h3><p>Las citas se pierden con cada reinicio, nada impide cruzar dos citas del mismo groomer y cualquier dato (un estado <code>QUIZÁS</code>, una cita sin nombre) se acepta sin revisar.</p>
+            <h3>16.2 · Puente a la Clase 3</h3><p>La próxima clase conectamos Agendia a la base <code>agendia</code> con <strong>Prisma</strong>: las tablas <code>Servicio</code> y <code>Cita</code>, la migración, los services reescritos (rutas y controladores no cambian), las validaciones con <strong>400</strong> y la regla de Valentina con <strong>409 Conflict</strong>.</p>
+            <div class="mision"><div class="mision-head"><span class="mision-marca">2</span><h3 class="mision-titulo">Fase 2 · Taller del módulo</h3></div><div class="mision-grid"><div class="mision-item"><span class="component-label">Para la situación</span><p>Lucía, de Estudio Prana, ya ve su catálogo de clases y ahora necesita registrar <strong>inscripciones</strong>: quién se inscribe, a qué clase y con qué correo.</p></div><div class="mision-item"><span class="component-label">Lo que haces</span><p>En tu repositorio <code>taller-prana-api</code>, haz <strong>Sync fork → Update branch</strong> y <code>git pull</code>. Organiza el proyecto en <code>app.js</code>, <code>routes</code>, <code>controllers</code> y <code>services</code>, construye el CRUD de <code>/api/inscripciones</code> en memoria (toda inscripción empieza en <code>PENDIENTE</code>) y exporta tu colección de Postman en la carpeta <code>postman/</code>. El enunciado completo está en <code>enunciados/fase-2.md</code>.</p></div><div class="mision-item"><span class="component-label">Cómo sabemos que quedó</span><p><code>npm test</code> muestra los ejercicios 01 a 09 en ✓, y cada <code>git push</code> actualiza tu nota en el mismo Pull Request. Entrega antes de la Clase 3, el viernes 6 de noviembre.</p></div></div></div>
+            <div class="autoevaluacion"><span class="component-label">¿Ya puedo…?</span><ul><li><label><input type="checkbox"><span>Explicar qué método y qué código de estado corresponden a registrar, confirmar y borrar una cita, y por qué.</span></label></li><li><label><input type="checkbox"><span>Construir Agendia en capas <code>routes / controllers / services</code> y señalar dónde vive cada responsabilidad.</span></label></li><li><label><input type="checkbox"><span>Verificar el CRUD de citas con Postman: <code>201</code> al crear, <code>200</code> al confirmar con <code>PATCH</code> y <code>204</code> al eliminar.</span></label></li></ul></div>
+          </div>
+        </section>
+
+        <section class="section view" id="glosario" data-accent="1" data-layout="canvas" data-escena="consulta" hidden>
+          <div class="sec-head"><span class="sec-n">Consultar</span><h2 class="sec-t">Glosario de la clase</h2><p class="sec-s">Los conceptos técnicos de hoy, su modelo cotidiano y el lugar donde aparecen.</p></div>
+          <div class="body"><dl class="glosario">
+            <div class="glos-item" data-termino="rest"><dt class="glos-termino">REST</dt><dd class="glos-tecnica">Estilo para diseñar APIs sobre HTTP con recursos identificados por URL, métodos que dicen la acción y códigos que dicen el resultado.</dd><dd class="glos-vida">Las reglas de una ventanilla de trámites: cualquiera que las conozca puede hacer el trámite sin preguntar.</dd><dd class="glos-donde">REST: un contrato entre el cliente y el servidor</dd></div>
+            <div class="glos-item" data-termino="recurso"><dt class="glos-termino">Recurso</dt><dd class="glos-tecnica">Cosa del negocio que la API expone en una URL, nombrada en plural y sin verbos (<code>/api/citas</code>).</dd><dd class="glos-vida">El cajón del archivador donde están todas las citas.</dd><dd class="glos-donde">REST · Recursos</dd></div>
+            <div class="glos-item" data-termino="crud"><dt class="glos-termino">CRUD</dt><dd class="glos-tecnica">Las cuatro operaciones básicas sobre un recurso: crear (<code>POST</code>), leer (<code>GET</code>), actualizar (<code>PATCH</code>/<code>PUT</code>) y eliminar (<code>DELETE</code>).</dd><dd class="glos-vida">Lo que la recepcionista hace con una cita: anotarla, mirarla, corregirla y tacharla.</dd><dd class="glos-donde">Apertura</dd></div>
+            <div class="glos-item" data-termino="codigo-estado"><dt class="glos-termino">Código de estado</dt><dd class="glos-tecnica">Número de tres dígitos con que el servidor dice cómo salió la petición: 200, 201, 204, 404, 500.</dd><dd class="glos-vida">El sello de la respuesta de una oficina: radicado, no existe, error interno.</dd><dd class="glos-donde">REST · Los códigos</dd></div>
+            <div class="glos-item" data-termino="patch"><dt class="glos-termino"><code>PATCH</code></dt><dd class="glos-tecnica">Método HTTP para cambiar una parte de un recurso existente; se envía solo lo que cambia.</dd><dd class="glos-vida">Corregir un solo dato de un formulario con corrector, sin llenarlo de nuevo.</dd><dd class="glos-donde">Ver, confirmar y eliminar una cita</dd></div>
+            <div class="glos-item" data-termino="arquitectura-capas"><dt class="glos-termino">Arquitectura en capas</dt><dd class="glos-tecnica">Organización del backend en grupos con una sola responsabilidad (rutas, controladores, servicios) que solo hablan con la capa vecina.</dd><dd class="glos-vida">Recepción, coordinación y groomer en Huellitas: cada quien hace solo su parte.</dd><dd class="glos-donde">Arquitectura en capas: el modelo</dd></div>
+            <div class="glos-item" data-termino="router"><dt class="glos-termino">Router</dt><dd class="glos-tecnica">Mini aplicación de Express que solo tiene rutas; se monta en un prefijo con <code>app.use</code>.</dd><dd class="glos-vida">La recepción de un área del edificio: recibe solo a quien viene a ese piso.</dd><dd class="glos-donde">Los servicios de Huellitas, en capas</dd></div>
+            <div class="glos-item" data-termino="controlador"><dt class="glos-termino">Controlador</dt><dd class="glos-tecnica">Función que lee la petición, llama al service y elige el código y el contenido de la respuesta.</dd><dd class="glos-vida">El coordinador que toma la orden y le avisa al cliente cómo salió.</dd><dd class="glos-donde">Los servicios de Huellitas, en capas</dd></div>
+            <div class="glos-item" data-termino="service"><dt class="glos-termino">Service</dt><dd class="glos-tecnica">Módulo que guarda los datos y aplica las reglas del negocio, sin saber nada de HTTP.</dd><dd class="glos-vida">El groomer: hace el trabajo y conoce las reglas del oficio.</dd><dd class="glos-donde">Los servicios de Huellitas, en capas</dd></div>
+            <div class="glos-item" data-termino="modulo"><dt class="glos-termino">Módulo (<code>export</code> / <code>import</code>)</dt><dd class="glos-tecnica">Archivo de JavaScript con su propio ámbito; solo comparte lo que marca con <code>export</code> y usa lo de otros con <code>import</code>.</dd><dd class="glos-vida">Una oficina con puerta: lo que no se entrega por la ventanilla no sale.</dd><dd class="glos-donde">Separar el arranque de la configuración</dd></div>
+            <div class="glos-item" data-termino="cuerpo-peticion"><dt class="glos-termino">Cuerpo de la petición (<code>req.body</code>)</dt><dd class="glos-tecnica">Datos que el cliente envía dentro de la petición; Express los deja en <code>req.body</code> cuando un middleware los lee.</dd><dd class="glos-vida">El formulario que va dentro del sobre, no en la dirección.</dd><dd class="glos-donde">Registrar una cita</dd></div>
+            <div class="glos-item" data-termino="middleware"><dt class="glos-termino">Middleware</dt><dd class="glos-tecnica">Función que Express ejecuta con cada petición antes de la ruta; <code>express.json()</code> convierte el cuerpo JSON en objeto.</dd><dd class="glos-vida">El portero que abre los sobres antes de pasarlos a la oficina.</dd><dd class="glos-donde">Registrar una cita · Paso 8</dd></div>
+            <div class="glos-item" data-termino="postman"><dt class="glos-termino">Postman</dt><dd class="glos-tecnica">Aplicación para construir, enviar y guardar peticiones HTTP con cualquier método.</dd><dd class="glos-vida">El formulario de prueba del notario antes de abrir la ventanilla.</dd><dd class="glos-donde">Registrar una cita</dd></div>
+            <div class="glos-item" data-termino="base-relacional"><dt class="glos-termino">Base de datos relacional</dt><dd class="glos-tecnica">Sistema que guarda la información en tablas con filas y columnas, en disco, y la consulta con SQL; PostgreSQL es el motor.</dd><dd class="glos-vida">El archivador con un cajón por tipo de documento.</dd><dd class="glos-donde">Por qué la memoria no alcanza</dd></div>
+          </dl></div>
+        </section>
+
+        <section class="section view" id="documentacion" data-accent="1" data-layout="canvas" data-escena="consulta" hidden>
+          <div class="sec-head"><span class="sec-n">Consultar</span><h2 class="sec-t">Documentación para profundizar</h2><p class="sec-s">Fuentes oficiales y la parte exacta que conecta con lo construido.</p></div>
+          <div class="body"><ul class="docs">
+            <li><div class="doc-meta"><span class="doc-fuente">Express</span><span class="doc-tipo">Guía oficial</span><span class="doc-idioma">Inglés</span></div><a class="doc-titulo" href="https://expressjs.com/en/guide/routing.html" target="_blank" rel="noopener">Enrutamiento en Express</a><p class="doc-que-leer">La sección <strong>express.Router</strong>; es lo que hicimos con <code>servicios.routes.js</code> y <code>app.use('/api/servicios', …)</code>.</p></li>
+            <li><div class="doc-meta"><span class="doc-fuente">Express</span><span class="doc-tipo">Referencia de API 5.x</span><span class="doc-idioma">Inglés</span></div><a class="doc-titulo" href="https://expressjs.com/en/5x/api/request/" target="_blank" rel="noopener"><code>req.body</code> en Express 5</a><p class="doc-que-leer"><code>req.body</code>: por qué vale <code>undefined</code> hasta que usas <code>express.json()</code>.</p></li>
+            <li><div class="doc-meta"><span class="doc-fuente">MDN Web Docs</span><span class="doc-tipo">Referencia web</span><span class="doc-idioma">Español</span></div><a class="doc-titulo" href="https://developer.mozilla.org/es/docs/Web/HTTP/Reference/Methods/PATCH" target="_blank" rel="noopener">El método PATCH</a><p class="doc-que-leer">La diferencia con <code>PUT</code>; es la decisión del momento IA.</p></li>
+            <li><div class="doc-meta"><span class="doc-fuente">Postman Learning Center</span><span class="doc-tipo">Guía oficial</span><span class="doc-idioma">Inglés</span></div><a class="doc-titulo" href="https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data" target="_blank" rel="noopener">Exportar desde Postman</a><p class="doc-que-leer">Cómo exportar una colección; lo necesitas para la Fase 2 del taller.</p></li>
+            <li><div class="doc-meta"><span class="doc-fuente">PostgreSQL 18</span><span class="doc-tipo">Documentación oficial</span><span class="doc-idioma">Inglés</span></div><a class="doc-titulo" href="https://www.postgresql.org/docs/current/sql-createdatabase.html" target="_blank" rel="noopener"><code>CREATE DATABASE</code></a><p class="doc-que-leer">La forma más simple del comando, la que usamos para crear <code>agendia</code>.</p></li>
+          </ul><p class="doc-foot">© 2026 Ana Alvarado · Educadora Tech &amp; Desarrolladora Full Stack · Todos los derechos reservados · linkedin.com/in/ana-alvarado-instructora-full-stack</p></div>
+        </section>
+      </div>
+      <nav class="view-controls" id="viewControls" aria-label="Navegación entre secciones"><button class="view-btn" id="prevView" type="button" aria-label="Sección anterior">←</button><span class="view-position" id="viewPosition" aria-live="polite">Portada</span><button class="view-btn" id="nextView" type="button" aria-label="Sección siguiente">→</button></nav>
+    </main>
+  </div>
+  <div class="watermark" aria-hidden="true">© 2026 ANA ALVARADO</div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+  <script src="anaclase-v12.js"></script>
+</body>
+</html>
