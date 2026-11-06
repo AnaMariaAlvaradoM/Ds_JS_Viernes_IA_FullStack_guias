@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="es" data-tema="oscuro" data-tema-base="oscuro" data-empresa="dev-senior" data-paleta="cian">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Ana Alvarado">
+  <meta name="copyright" content="© 2026 Ana Alvarado — Todos los derechos reservados">
+  <meta name="robots" content="noindex, nofollow, noarchive, noimageindex">
+  <title>Clase 3 · Base de datos + CRUD real · Ana Alvarado</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&amp;family=Inter:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css">
+  <link rel="stylesheet" href="anaestilos-v12.css">
+</head>
+<body>
+  <a class="skip-link" href="#apertura">Saltar al contenido</a>
+  <div class="topline" id="topline" aria-hidden="true"></div>
+  <div class="controls" aria-label="Controles">
+    <button class="ctrl" id="temaBtn" type="button" aria-label="Cambiar tema">☀</button>
+    <button class="ctrl" id="fullscreenBtn" type="button" aria-label="Pantalla completa">⛶</button>
+  </div>
+
+  <div class="shell" id="shell" data-collapsed="false">
+    <aside class="sidebar" aria-label="Índice de la clase">
+      <div class="sb-top"><span class="brand-mark">A</span><div class="sb-title"><b>JavaScript AI Fullstack</b><span>Módulo 1 · Clase 3</span></div></div>
+      <button class="sb-toggle" id="collapseBtn" type="button" aria-label="Colapsar menú">‹</button>
+      <nav class="sb-nav" id="nav" aria-label="Secciones">
+        <a class="nav-item active" href="#portada"><span class="nav-index">00</span><span class="nav-label">Portada</span></a>
+        <span class="nav-group">Problema</span>
+        <a class="nav-item" href="#apertura"><span class="nav-index">01</span><span class="nav-label">La agenda desapareció</span></a>
+        <a class="nav-item" href="#objetivos"><span class="nav-index">02</span><span class="nav-label">Lo que lograrás hoy</span></a>
+        <span class="nav-group">Comprender</span>
+        <a class="nav-item" href="#modelo"><span class="nav-index">03</span><span class="nav-label">Del arreglo a la tabla</span></a>
+        <span class="nav-group">Construir</span>
+        <a class="nav-item" href="#prisma"><span class="nav-index">04</span><span class="nav-label">Prisma entra al proyecto</span></a>
+        <a class="nav-item" href="#schema"><span class="nav-index">05</span><span class="nav-label">Las tablas de Agendia</span></a>
+        <a class="nav-item" href="#migracion"><span class="nav-index">06</span><span class="nav-label">Migración y cliente</span></a>
+        <a class="nav-item" href="#seed"><span class="nav-index">07</span><span class="nav-label">El catálogo nace</span></a>
+        <a class="nav-item" href="#catalogo"><span class="nav-index">08</span><span class="nav-label">El catálogo sale de la base</span></a>
+        <a class="nav-item" href="#errores"><span class="nav-index">09</span><span class="nav-label">Errores en un solo lugar</span></a>
+        <a class="nav-item" href="#citas"><span class="nav-index">10</span><span class="nav-label">Las citas persisten</span></a>
+        <a class="nav-item" href="#conflicto"><span class="nav-index">11</span><span class="nav-label">La regla 409</span></a>
+        <a class="nav-item" href="#crud"><span class="nav-index">12</span><span class="nav-label">CRUD del catálogo</span></a>
+        <span class="nav-group">Probar</span>
+        <a class="nav-item" href="#traza"><span class="nav-index">13</span><span class="nav-label">La traza completa</span></a>
+        <a class="nav-item" href="#guardar"><span class="nav-index">14</span><span class="nav-label">Guardar y diagnosticar</span></a>
+        <span class="nav-group">Cerrar</span>
+        <a class="nav-item" href="#cierre"><span class="nav-index">15</span><span class="nav-label">Cierre y puente</span></a>
+        <span class="nav-group">Consultar</span>
+        <a class="nav-item" href="#glosario"><span class="nav-index">16</span><span class="nav-label">Glosario</span></a>
+        <a class="nav-item" href="#documentacion"><span class="nav-index">17</span><span class="nav-label">Documentación</span></a>
+      </nav>
+      <div class="sb-prog"><div class="lbl"><span>Progreso</span><span id="progPct">0%</span></div><div class="track"><div class="fill" id="progFill"></div></div></div>
+    </aside>
+
+    <main class="main">
+      <header class="hero view" id="portada" data-accent="1">
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <span class="eyebrow">Dev Senior · Módulo 1 · Clase 3</span>
+            <h1 class="hero-title">Datos que sobreviven al servidor</h1>
+            <p class="hero-lead">Las citas y el catálogo viven en PostgreSQL, la API rechaza datos incorrectos y no deja cruzar dos citas del mismo groomer.</p>
+            <div class="meta"><span class="pill" data-hot>Agendia</span><span class="pill">PostgreSQL 18</span><span class="pill">Prisma ORM 7</span><span class="pill">Express 5</span></div>
+          </div>
+          <figure class="hero-visual">
+            <img src="img/agendia-agenda-perdida.png" alt="Recepcionista de un spa canino frente a una agenda vacía, dos perros que llegan al mismo tiempo y registros que pasan de una memoria frágil a un archivo persistente">
+            <figcaption class="hero-note">La memoria del servidor se borra; la base conserva las citas y permite comprobar la agenda.<span class="figura-credito">Ilustración original creada para esta clase.</span></figcaption>
+          </figure>
+        </div>
+      </header>
+
+      <div class="content">
+        <section class="section view" id="apertura" data-accent="1" data-layout="canvas" data-escena="apertura" hidden>
+          <div class="sec-head"><span class="sec-n">El problema</span><h2 class="sec-t">Se borró la agenda</h2><p class="sec-s">Las citas vivían en la memoria del proceso de Node y desaparecieron cuando el servidor se reinició.</p></div>
+          <div class="body">
+            <article class="chat">
+              <div class="chat-head"><span class="chat-canal">WhatsApp · Huellitas Spa Canino</span><span class="chat-contexto">Conversación con el equipo</span></div>
+              <ol class="chat-mensajes">
+                <li class="chat-msg"><span class="chat-avatar">VR</span><span class="chat-autor">Valentina</span><p class="chat-texto">Hola, equipo. Esta semana la recepcionista estuvo probando Agendia con citas de verdad. ¡Le encantó!</p></li>
+                <li class="chat-msg"><span class="chat-avatar">VR</span><span class="chat-autor">Valentina</span><p class="chat-texto">Pero hoy en la mañana entró y la agenda estaba vacía. Las 11 citas del sábado desaparecieron. Le tocó llamar a cada cliente con el cuaderno viejo. 😩</p></li>
+                <li class="chat-msg"><span class="chat-avatar">VR</span><span class="chat-autor">Valentina</span><p class="chat-texto">Y otra cosa: ayer anotó dos perros con Dana a las 3:00 p. m. y Agendia lo dejó pasar. Justo lo que queríamos evitar.</p></li>
+                <li class="chat-msg" data-lado="equipo"><span class="chat-avatar">EQ</span><span class="chat-autor">Equipo</span><p class="chat-texto">Valentina, qué pena. El servidor se reinició y, como te contamos, las citas vivían en su memoria. Hoy las pasamos a una base de datos y agregamos la regla de Dana.</p></li>
+              </ol>
+            </article>
+            <div class="papel"><span class="component-label">Lo que pasó, traducido</span><p>El arreglo <code>citas</code> vive en la <strong>memoria del proceso</strong> de Node. Cuando el proceso termina (un reinicio, una actualización, un corte de luz), esa memoria se libera y el arreglo desaparece con todo lo que tenía. Lo viviste en la Clase 2 cada vez que guardabas un archivo y <code>--watch</code> reiniciaba el servidor.</p></div>
+            <div class="micro-task"><span class="component-label">Recuerda</span><p class="micro-task-q">En la Clase 2 separamos Agendia en rutas, controladores y services. ¿Qué capa prometimos que cambiaría cuando llegara la base de datos?</p><details class="micro-reveal"><summary>Comprobar</summary><p class="micro-answer">Los services, porque son los únicos que saben dónde se guardan los datos. Hoy lo comprobarás: las rutas no cambian, los services cambian por dentro y los controladores solo aprenden a <strong>esperar</strong> la respuesta de la base (una palabra: <code>await</code>).</p></details></div>
+          </div>
+        </section>
+
+        <section class="section view" id="objetivos" data-accent="1" data-layout="canvas" data-escena="objetivos" hidden>
+          <div class="sec-head"><span class="sec-n">Ruta de hoy</span><h2 class="sec-t">Lo que lograrás en esta sesión</h2></div>
+          <div class="body">
+            <div class="estado-proyecto" role="group" aria-label="El proyecto antes y después de la clase">
+              <div class="estado-antes"><span class="component-label">Antes de hoy</span><p>Agendia registra citas, pero las pierde con cada reinicio y deja cruzar dos citas del mismo groomer.</p></div>
+              <div class="estado-flecha" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+              <div class="estado-despues"><span class="component-label">Al terminar</span><p>Las citas y el catálogo sobreviven a cualquier reinicio, la API rechaza datos incorrectos y nunca deja cruzar dos citas del mismo groomer.</p></div>
+            </div>
+            <ol class="objetivos">
+              <li><div><p class="obj-texto"><strong>Explicar</strong> cómo se relacionan <code>Servicio</code> y <code>Cita</code> en una base relacional.</p><p class="obj-evidencia">señalas en <code>schema.prisma</code> la llave foránea y dices por qué la cita guarda <code>servicioId</code> y no una copia del servicio.</p></div></li>
+              <li><div><p class="obj-texto"><strong>Construir</strong> la persistencia de Agendia con Prisma.</p><p class="obj-evidencia">creas una cita, reinicias el servidor y la cita sigue ahí.</p></div></li>
+              <li><div><p class="obj-texto"><strong>Verificar</strong> las reglas con los códigos correctos.</p><p class="obj-evidencia">Postman muestra <code>400</code> con un dato faltante, <code>404</code> con un id que no existe y <code>409</code> al cruzar dos citas de Dana.</p></div></li>
+            </ol>
+          </div>
+        </section>
+
+        <section class="section view" id="modelo" data-accent="1" data-layout="canvas" data-escena="concepto" hidden>
+          <div class="sec-head"><span class="sec-n">Comprender</span><h2 class="sec-t">Del arreglo a la tabla</h2><p class="sec-s">Cada tabla representa un tipo de cosa; las llaves conectan sus filas sin duplicar datos.</p></div>
+          <div class="body">
+            <p>En la Clase 2 viste que una base de datos relacional guarda la información en <strong>tablas</strong>: cada tabla es un tipo de cosa, cada fila un registro y cada columna un campo con un tipo fijo. También creaste la base <code>agendia</code>, vacía. Hoy decidimos qué tablas lleva y cómo se conectan.</p>
+            <figure class="figura"><div class="figura-stage"><img src="img/persistencia-relacion-datos.png" alt="Registros de servicios y citas conectados mediante una relación uno a muchos y guardados en una base persistente"></div><figcaption>Un servicio conserva la información oficial y varias citas lo referencian; Prisma conecta los objetos de JavaScript con las filas.<span class="figura-credito">Ilustración original creada para esta clase.</span></figcaption></figure>
+            <h3>3.1 · Las dos tablas</h3>
+            <p>Valentina maneja dos tipos de cosas: los <strong>servicios</strong> que ofrece (baño, corte de raza…) y las <strong>citas</strong> que agenda. Cada uno es una tabla.</p>
+            <div class="table-wrap"><table class="data-table"><caption>Tabla Servicio</caption><thead><tr><th>id</th><th>nombre</th><th>descripcion</th><th>duracionMin</th><th>precio</th><th>activo</th></tr></thead><tbody><tr><td>1</td><td>Baño completo</td><td>(vacía)</td><td>60</td><td>45000</td><td>sí</td></tr><tr><td>2</td><td>Corte de raza</td><td>(vacía)</td><td>90</td><td>65000</td><td>sí</td></tr></tbody></table></div>
+            <div class="table-wrap"><table class="data-table"><caption>Tabla Cita (resumida)</caption><thead><tr><th>id</th><th>clienteNombre</th><th>profesional</th><th>fechaHora</th><th>estado</th><th>servicioId</th></tr></thead><tbody><tr><td>1</td><td>Laura Gómez</td><td>Dana</td><td>7 nov · 3:00 p. m.</td><td>PENDIENTE</td><td data-emphasis>2</td></tr><tr><td>2</td><td>Andrés Pardo</td><td>Dana</td><td>7 nov · 4:30 p. m.</td><td>PENDIENTE</td><td data-emphasis>1</td></tr></tbody></table></div>
+            <p><code>descripcion</code> queda vacía por ahora: en la Clase 4 la escribirá la IA. <code>activo</code> permite, más adelante, dejar de ofrecer un servicio sin borrarlo.</p>
+            <h3>3.2 · Las llaves</h3>
+            <div class="definicion"><div class="def-tecnica"><span class="component-label">Definición técnica</span><p class="def-termino">Llave primaria y llave foránea</p><p>La <button class="termino" data-glosario="llave-primaria">llave primaria</button> es la columna que identifica cada fila sin repetirse: el <code>id</code>. La <button class="termino" data-glosario="llave-foranea">llave foránea</button> es una columna de una tabla que guarda la llave primaria de otra; la base de datos garantiza que siempre apunte a una fila que existe. En <code>Cita</code>, la columna <code>servicioId</code> es una llave foránea hacia <code>Servicio</code>.</p></div><div class="def-vida"><span class="component-label">En la vida real</span><p>Es el número de la historia clínica en la ficha de una cita médica: la ficha no copia toda la historia, solo el número. Si alguien cambia un dato de la historia, todas las fichas lo ven al buscarla. Y nadie puede anotar en la ficha un número de historia que no existe.</p></div></div>
+            <div class="papel"><span class="component-label">Relación 1 a N</span><p>Un servicio puede tener <strong>muchas</strong> citas (el corte de raza se agenda veinte veces por semana), pero cada cita es de <strong>un solo</strong> servicio. Esa forma se llama relación <strong>uno a muchos</strong> (1 a N), y siempre se resuelve igual: la llave foránea va en el lado de "muchos", es decir, en <code>Cita</code>.</p></div>
+            <div class="micro-task"><span class="component-label">Para pensar</span><p class="micro-task-q">Si cada cita guardara una copia completa del servicio (nombre, duración y precio), ¿qué pasaría el día que Valentina sube el precio del corte de raza?</p><details class="micro-reveal"><summary>Comprobar</summary><p class="micro-answer">Las citas viejas quedarían con el precio anterior y las nuevas con el nuevo, y nadie sabría cuál es el oficial. Con la llave foránea, el precio vive en un solo lugar (la fila del servicio) y todas las citas lo leen de ahí.</p></details></div>
+            <h3>3.3 · Un traductor para SQL</h3>
+            <p>Para crear estas tablas, PostgreSQL entiende <strong>SQL</strong> (<code>CREATE TABLE …</code>). Podríamos escribirlo a mano, pero hoy usamos un <button class="termino" data-glosario="orm">ORM</button>: una herramienta que traduce entre los objetos de JavaScript y las filas de las tablas. Tú describes las tablas en un archivo, el ORM escribe el SQL y te da funciones como <code>prisma.cita.create(...)</code> para guardar sin escribir <code>INSERT</code>. El ORM de hoy es <strong>Prisma</strong>.</p>
+            <div class="definicion"><div class="def-tecnica"><span class="component-label">Definición técnica</span><p class="def-termino">ORM</p><p>Un <strong>ORM</strong> (<em>Object-Relational Mapping</em>, mapeo objeto-relacional) es una librería que relaciona las clases u objetos de un lenguaje con las tablas de una base relacional: genera las consultas SQL a partir de llamadas a funciones y convierte las filas que responde la base en objetos del lenguaje.</p></div><div class="def-vida"><span class="component-label">En la vida real</span><p>Es un traductor en una reunión: tú hablas en JavaScript ("crea esta cita"), el traductor se lo dice a PostgreSQL en SQL (<code>INSERT INTO "Cita" …</code>) y te devuelve la respuesta en JavaScript (un objeto con <code>id</code>).</p></div></div>
+            <div class="table-wrap"><table class="data-table"><caption>Quién dice que va así</caption><thead><tr><th>Etiqueta</th><th>Quién lo dice</th><th>¿Se puede cambiar?</th><th>Dónde se verifica</th></tr></thead><tbody><tr><td>🟨 Lenguaje</td><td>La sintaxis de JavaScript o de SQL</td><td>No</td><td>MDN · documentación de PostgreSQL</td></tr><tr><td>🟩 Plataforma</td><td>Node.js, PostgreSQL, el sistema de archivos</td><td>No, salvo por configuración</td><td>Documentación de Node.js y de PostgreSQL</td></tr><tr><td>🟧 Framework o librería</td><td>Express, Prisma, dotenv</td><td>No: si no se respeta, no funciona</td><td>Documentación oficial de cada librería</td></tr><tr><td>⬜ Convención</td><td>La comunidad o el equipo lo hace así</td><td>Sí, aunque conviene respetarla</td><td>Guías de estilo, costumbre del equipo</td></tr><tr><td>🟪 Decisión del proyecto</td><td>Nosotros, por el negocio de Huellitas</td><td>Sí, si cambia el negocio</td><td>El chat de Valentina, el plano del módulo</td></tr></tbody></table></div>
+          </div>
+        </section>
+
+        <section class="section view" id="prisma" data-accent="1" data-layout="canvas" data-escena="construccion" hidden>
+          <div class="sec-head"><span class="sec-n">Construir · configuración</span><h2 class="sec-t">Prisma entra al proyecto</h2></div>
+          <div class="body">
+            <div class="mision"><div class="mision-head"><span class="mision-marca">1</span><span class="mision-titulo">Misión del bloque</span></div><div class="mision-grid"><div class="mision-item"><span class="component-label">Para Valentina</span><p>Que la agenda deje de vivir en la memoria del servidor.</p></div><div class="mision-item"><span class="component-label">Lo que hacemos</span><p>Instalamos Prisma, lo conectamos con la base <code>agendia</code>, describimos las tablas y las creamos con una migración.</p></div><div class="mision-item" data-resultado><span class="component-label">Cómo sabemos que quedó</span><p>La base <code>agendia</code> tiene las tablas <code>Servicio</code> y <code>Cita</code>, y el catálogo de Huellitas está guardado en ella.</p></div></div></div>
+            <h3>4.1 · Instalar e inicializar</h3>
+            <p>Apaga el servidor (<code>Ctrl + C</code>).</p>
+            <div class="code-block" data-tipo="terminal"><div class="code-head"><div><span class="code-context">Terminal · desde agendia-api · instala la CLI</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-bash">npm install -D prisma@7</code></pre></div>
+            <div class="code-block" data-tipo="terminal"><div class="code-head"><div><span class="code-context">Terminal · dependencias de ejecución</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-bash">npm install @prisma/client@7 @prisma/adapter-pg@7 pg dotenv</code></pre></div>
+            <div class="consola"><div class="consola-head">Salida esperada; los números pueden variar</div><ol><li class="out">added 199 packages in 43s</li><li class="out">added 21 packages, and changed 1 package in 9s</li></ol></div>
+            <p><strong>Por qué <code>@7</code>:</strong> npm ya ofrece Prisma 8 como versión de prueba. Prisma 7 es la estable, la que usa todo el curso y el taller. El <code>@7</code> pide "la última versión 7".</p>
+            <div class="code-block" data-tipo="terminal"><div class="code-head"><div><span class="code-context">Terminal · inicializa Prisma</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-bash">npx prisma init --datasource-provider postgresql --output ../src/generated/prisma --no-skills</code></pre></div>
+            <div class="consola"><div class="consola-head">Salida esperada resumida</div><ol><li class="out">Initialized Prisma in your project</li><li class="out">prisma/schema.prisma · prisma7.config.ts · .env</li><li class="out">warn You already have a .gitignore file. Don't forget to add .env in it to not commit any private information.</li></ol></div>
+            <ul class="checklist"><li><code>npx prisma init</code> ejecuta la herramienta instalada e <code>init</code> prepara los archivos iniciales.</li><li><code>--datasource-provider postgresql</code> dice que la base será PostgreSQL.</li><li><code>--output ../src/generated/prisma</code> indica dónde queda el cliente generado; la ruta se cuenta desde <code>prisma/</code>.</li><li><code>--no-skills</code> evita las carpetas de instrucciones para asistentes de IA que Prisma 7 también instala.</li><li>El aviso <code>warn</code> recuerda ignorar <code>.env</code>; el <code>.gitignore</code> de la Clase 1 ya lo hace.</li></ul>
+            <div class="callout" data-tone="warning"><span class="callout-icon">!</span><div><h3>Ojo técnico</h3><p>Si la terminal dice <code>A folder called prisma already exists</code>, ya habías corrido <code>init</code> antes. No lo repitas: sigue con los archivos que ya tienes.</p></div></div>
+            <h3>4.2 · Variables y archivos ignorados</h3>
+            <article class="archivo"><div class="archivo-ficha" data-tipo="apoyo"><span class="archivo-accion">Editar</span><span class="archivo-nombre">.env</span><span class="archivo-ruta">agendia-api/</span></div><p class="archivo-intro">Aquí vive la dirección de la base de datos <strong>con tu contraseña</strong>. Es el archivo que la Clase 1 dejó listo en <code>.gitignore</code>: nunca sube a GitHub.</p>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">1</span><h3 class="lectura-titulo">La dirección de tu base</h3><p class="lectura-proposito">Borra todo lo que trajo el archivo y deja solo esta línea, con <strong>tu</strong> contraseña de <code>postgres</code> en lugar de <code>TU_CLAVE</code>.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Línea 1</span></div></div><pre class="line-numbers" data-start="1"><code class="language-plaintext">DATABASE_URL="postgresql://postgres:TU_CLAVE@localhost:5432/agendia"</code></pre></div><ol class="notas"><li class="nota" data-lineas="1"><div class="nota-cabeza"><span class="nota-lineas">L1</span><code class="nota-codigo">DATABASE_URL=</code></div><p>🟧 Prisma y ⬜ Convención · Una variable de entorno se escribe <code>NOMBRE=valor</code>; el nombre <code>DATABASE_URL</code> es el que usa la documentación de Prisma y casi todos los servicios de hosting. Las comillas protegen el valor. <code>postgresql://postgres:TU_CLAVE@</code> contiene el protocolo, usuario y contraseña; <code>localhost:5432/agendia</code> señala el servidor, puerto y base.</p></li></ol></div></div>
+              <details class="code-reveal" data-archivo=".env"><summary><span><span class="code-reveal-title">.env · archivo completo</span><span class="code-reveal-note">1 línea · con tu contraseña</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Editar</span><span class="code-file">.env</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-plaintext">DATABASE_URL="postgresql://postgres:TU_CLAVE@localhost:5432/agendia"</code></pre></div></div></details>
+            </article>
+            <div class="callout" data-tone="warning"><span class="callout-icon">!</span><div><h3>Ojo técnico</h3><p>Si tu contraseña tiene caracteres como <code>@</code>, <code>#</code>, <code>/</code> o <code>:</code>, cambia <code>@</code> por <code>%40</code>, <code>#</code> por <code>%23</code>, <code>/</code> por <code>%2F</code> y <code>:</code> por <code>%3A</code>. Si PostgreSQL usa el puerto <code>5433</code>, cámbialo también.</p></div></div>
+            <article class="archivo"><div class="archivo-ficha" data-tipo="apoyo"><span class="archivo-accion">Crear</span><span class="archivo-nombre">.env.example</span><span class="archivo-ruta">agendia-api/</span></div><p class="archivo-intro">El <code>.env</code> no sube a GitHub; este archivo muestra qué variables necesita el proyecto sin compartir la contraseña real.</p><details class="code-reveal" data-archivo=".env.example"><summary><span><span class="code-reveal-title">.env.example · archivo completo</span><span class="code-reveal-note">1 línea · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Crear</span><span class="code-file">.env.example</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-plaintext">DATABASE_URL="postgresql://postgres:TU_CLAVE@localhost:5432/agendia"</code></pre></div></div></details></article>
+            <article class="archivo"><div class="archivo-ficha" data-tipo="apoyo"><span class="archivo-accion">Revisar</span><span class="archivo-nombre">.gitignore</span><span class="archivo-ruta">agendia-api/</span></div><p class="archivo-intro"><code>prisma init</code> agregó el cliente generado: no se sube porque cada persona lo recrea con <code>npx prisma generate</code>.</p><details class="code-reveal" data-archivo=".gitignore"><summary><span><span class="code-reveal-title">.gitignore · archivo completo</span><span class="code-reveal-note">4 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Revisar</span><span class="code-file">.gitignore</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-plaintext">node_modules/
+.env
+
+/src/generated/prisma</code></pre></div></div></details></article>
+          </div>
+        </section>
+
+        <section class="section view" id="schema" data-accent="1" data-layout="canvas" data-escena="construccion" hidden>
+          <div class="sec-head"><span class="sec-n">Construir · schema.prisma</span><h2 class="sec-t">Las tablas de Agendia</h2><p class="sec-s">El schema es el plano: describe tablas, tipos, valores permitidos y relaciones.</p></div>
+          <div class="body">
+            <p>PostgreSQL ya tiene la base <code>agendia</code>, pero vacía: no sabe qué es un servicio ni qué es una cita. En Prisma, las tablas se describen en un solo archivo, el <button class="termino" data-glosario="schema-prisma">schema</button>, con un lenguaje propio y muy corto. Cada <code>model</code> se convierte en una tabla y cada línea del modelo en una columna.</p>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar</span><span class="archivo-nombre">schema.prisma</span><span class="archivo-ruta">agendia-api/prisma/</span></div><p class="archivo-intro">Prisma lo lee para crear las tablas con una migración y generar funciones como <code>prisma.servicio.findMany()</code>. Se construye en el orden del negocio: primero lo que Huellitas ofrece, después lo que agenda.</p>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">1</span><h3 class="lectura-titulo">Lo que generó Prisma</h3><p class="lectura-proposito">El generador fabrica el cliente; el datasource declara que la base es PostgreSQL.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 1–8</span></div></div><pre class="line-numbers" data-start="1"><code class="language-plaintext">generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}</code></pre></div><ol class="notas"><li class="nota" data-lineas="1-3"><div class="nota-cabeza"><span class="nota-lineas">L1–3</span><code class="nota-codigo">generator client</code></div><p>🟧 Prisma · Un bloque <code>generator</code> dice qué código fabricar. <code>provider = "prisma-client"</code> elige el cliente de Prisma 7 y <code>output</code> señala la carpeta del proyecto.</p></li><li class="nota" data-lineas="6-8"><div class="nota-cabeza"><span class="nota-lineas">L6–8</span><code class="nota-codigo">datasource db</code></div><p>🟧 Prisma · Dice con qué motor se habla. La dirección no va aquí: Prisma 7 la toma de <code>prisma7.config.ts</code> y del <code>.env</code>.</p></li></ol></div></div>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">2</span><h3 class="lectura-titulo">Lo que ofrece Huellitas</h3><p class="lectura-proposito"><b>Necesidad:</b> antes de agendar, Agendia tiene que saber qué servicios existen. <b>Dónde va:</b> debajo del bloque <code>datasource</code>.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 10–17</span></div></div><pre class="line-numbers" data-start="10"><code class="language-plaintext">model Servicio {
+  id          Int     @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  duracionMin Int
+  precio      Int
+  activo      Boolean @default(true)
+  citas       Cita[]
+}</code></pre></div><ol class="notas"><li class="nota" data-lineas="10"><div class="nota-cabeza"><span class="nota-lineas">L10</span><code class="nota-codigo">model Servicio</code></div><p>🟧 Prisma la palabra <code>model</code> · 🟪 Decisión del proyecto el nombre · Declara una tabla. El nombre va en singular y con mayúscula inicial.</p></li><li class="nota" data-lineas="11"><div class="nota-cabeza"><span class="nota-lineas">L11</span><code class="nota-codigo">Int @id @default(autoincrement())</code></div><p>🟧 Prisma · <code>Int</code> es entero, <code>@id</code> marca la <button class="termino" data-glosario="llave-primaria">llave primaria</button> y <code>autoincrement()</code> reemplaza el contador manual.</p></li><li class="nota" data-lineas="12-16"><div class="nota-cabeza"><span class="nota-lineas">L12–16</span><code class="nota-codigo">String · String? · Int · Boolean</code></div><p>🟧 Prisma · Sin <code>?</code> el campo es obligatorio; <code>descripcion String?</code> puede quedar vacía. <code>duracionMin</code> y <code>precio</code> son enteros; <code>activo</code> nace en <code>true</code>.</p></li><li class="nota" data-lineas="17"><div class="nota-cabeza"><span class="nota-lineas">L17</span><code class="nota-codigo">citas Cita[]</code></div><p>🟧 Prisma · Los corchetes significan una lista de citas: es el lado N de la relación. No crea una columna en <code>Servicio</code>.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><div class="code-block" data-tipo="terminal"><div class="code-head"><div><span class="code-context">Terminal</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-bash">npx prisma validate</code></pre></div></div></div><div class="checkpoint"><span class="component-label">Checkpoint</span><h3>El modelo de servicios es válido.</h3><p>Prisma confirma: <code>The schema at prisma/schema.prisma is valid 🚀</code>.</p></div></div>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">3</span><h3 class="lectura-titulo">Los estados posibles de una cita</h3><p class="lectura-proposito"><b>Necesidad:</b> la base debe rechazar cualquier estado fuera de los cuatro permitidos. <b>Dónde va:</b> debajo de <code>Servicio</code>.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 19–24</span></div></div><pre class="line-numbers" data-start="19"><code class="language-plaintext">enum EstadoCita {
+  PENDIENTE
+  CONFIRMADA
+  CANCELADA
+  COMPLETADA
+}</code></pre></div><ol class="notas"><li class="nota" data-lineas="19-24"><div class="nota-cabeza"><span class="nota-lineas">L19–24</span><code class="nota-codigo">enum EstadoCita</code></div><p>🟧 Prisma la palabra <code>enum</code> · 🟪 el nombre y los valores · Un <button class="termino" data-glosario="enum">enum</button> es una lista cerrada. En PostgreSQL se vuelve un tipo propio y rechaza cualquier valor que no esté aquí.</p></li></ol></div></div>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">4</span><h3 class="lectura-titulo">Lo que agenda Valentina</h3><p class="lectura-proposito"><b>Necesidad:</b> falta la tabla de las citas con la llave foránea. <b>Dónde va:</b> al final del archivo.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 26–36</span></div></div><pre class="line-numbers" data-start="26"><code class="language-plaintext">model Cita {
+  id              Int        @id @default(autoincrement())
+  clienteNombre   String
+  clienteTelefono String
+  profesional     String
+  fechaHora       DateTime
+  estado          EstadoCita @default(PENDIENTE)
+  notas           String?
+  servicioId      Int
+  servicio        Servicio   @relation(fields: [servicioId], references: [id])
+}</code></pre></div><ol class="notas"><li class="nota" data-lineas="27-30"><div class="nota-cabeza"><span class="nota-lineas">L27–30</span><code class="nota-codigo">id · clienteNombre · clienteTelefono · profesional</code></div><p>🟪 Decisión del proyecto · Son los campos de la cita de la Clase 2, ahora obligatorios.</p></li><li class="nota" data-lineas="31-33"><div class="nota-cabeza"><span class="nota-lineas">L31–33</span><code class="nota-codigo">DateTime · EstadoCita · String?</code></div><p>🟧 Prisma · <code>DateTime</code> guarda fecha y hora; el estado usa el enum y nace pendiente; las notas son opcionales.</p></li><li class="nota" data-lineas="34"><div class="nota-cabeza"><span class="nota-lineas">L34</span><code class="nota-codigo">servicioId Int</code></div><p>🟪 Decisión del proyecto · Es la <button class="termino" data-glosario="llave-foranea">llave foránea</button> que viaja en el JSON del <code>POST</code>.</p></li><li class="nota" data-lineas="35"><div class="nota-cabeza"><span class="nota-lineas">L35</span><code class="nota-codigo">@relation(fields, references)</code></div><p>🟧 Prisma · No es una columna: se lee "el servicio de esta cita es el <code>Servicio</code> cuyo <code>id</code> coincide con mi <code>servicioId</code>".</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo antes de completar la relación</h3><div class="code-block" data-tipo="terminal"><div class="code-head"><div><span class="code-context">Terminal</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-bash">npx prisma validate</code></pre></div><div class="consola"><div class="consola-head">Salida esperada resumida</div><ol><li class="out">P1012 · The relation field servicio on model Cita is missing an opposite relation field on model Servicio.</li><li class="out">--&gt; prisma/schema.prisma:35</li></ol></div></div></div><div class="checkpoint"><span class="component-label">Cómo leerlo</span><h3>La relación está coja.</h3><p><code>Cita</code> sabe cuál es su servicio, pero <code>Servicio</code> necesita declarar que tiene citas. Por eso agregamos <code>citas Cita[]</code> en la línea 17.</p></div></div>
+              <details class="code-reveal" data-archivo="schema.prisma"><summary><span><span class="code-reveal-title">schema.prisma · archivo completo</span><span class="code-reveal-note">38 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Editar</span><span class="code-file">schema.prisma</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-plaintext">generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Servicio {
+  id          Int     @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  duracionMin Int
+  precio      Int
+  activo      Boolean @default(true)
+  citas       Cita[]
+}
+
+enum EstadoCita {
+  PENDIENTE
+  CONFIRMADA
+  CANCELADA
+  COMPLETADA
+}
+
+model Cita {
+  id              Int        @id @default(autoincrement())
+  clienteNombre   String
+  clienteTelefono String
+  profesional     String
+  fechaHora       DateTime
+  estado          EstadoCita @default(PENDIENTE)
+  notas           String?
+  servicioId      Int
+  servicio        Servicio   @relation(fields: [servicioId], references: [id])
+}</code></pre></div></div></details>
+            </article>
+          </div>
+        </section>
+
+        <section class="section view" id="migracion" data-accent="1" data-layout="canvas" data-escena="construccion" hidden>
+          <div class="sec-head"><span class="sec-n">Construir · base y conexión</span><h2 class="sec-t">La migración crea; el cliente consulta</h2><p class="sec-s">El plano se convierte en SQL reproducible y Agendia recibe un único cliente para hablar con PostgreSQL.</p></div>
+          <div class="body">
+            <h3>6.1 · Aplicar el plano</h3>
+            <div class="definicion"><div class="def-tecnica"><span class="component-label">Definición técnica</span><p class="def-termino">Migración</p><p>Una <button class="termino" data-glosario="migracion">migración</button> es un archivo con las instrucciones SQL que llevan la base de un estado al siguiente. Se guarda en el repositorio en orden y se aplica una sola vez; la base anota cuáles ya aplicó.</p></div><div class="def-vida"><span class="component-label">En la vida real</span><p>Son los planos de cada remodelación de una casa, numerados por fecha. Cualquier maestro de obra puede construir una casa idéntica aplicándolos en orden.</p></div></div>
+            <div class="code-block" data-tipo="terminal"><div class="code-head"><div><span class="code-context">Terminal · crea y aplica la migración</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-bash">npx prisma migrate dev --name init</code></pre></div>
+            <div class="consola"><div class="consola-head">Salida esperada resumida</div><ol><li class="out">Applying migration `20261106003214_init`</li><li class="out">prisma/migrations/20261106003214_init/migration.sql</li><li class="out">Your database is now in sync with your schema.</li></ol></div>
+            <div class="code-block" data-tipo="terminal"><div class="code-head"><div><span class="code-context">Terminal · genera el cliente</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-bash">npx prisma generate</code></pre></div>
+            <div class="checkpoint"><span class="component-label">Checkpoint</span><h3>Prisma Client queda en <code>src/generated/prisma</code>.</h3><p>En Prisma 7, <code>migrate dev</code> ya no genera el cliente: repite <code>npx prisma generate</code> cada vez que cambies el schema.</p></div>
+            <div class="callout" data-tone="warning"><span class="callout-icon">!</span><div><h3>Ojo técnico</h3><p><code>P1000</code> indica que la contraseña del <code>.env</code> no coincide. <code>P1001</code> indica que PostgreSQL está apagado o el puerto no coincide. En Windows, enciende <code>postgresql-x64-18</code> desde Servicios.</p></div></div>
+            <h3>6.2 · Leer el SQL generado</h3>
+            <article class="archivo"><div class="archivo-ficha" data-tipo="apoyo"><span class="archivo-accion">Generado</span><span class="archivo-nombre">migration.sql</span><span class="archivo-ruta">agendia-api/prisma/migrations/&lt;fecha&gt;_init/</span></div><p class="archivo-intro">No se escribe ni se edita. <code>CREATE TYPE</code> crea el enum, <code>SERIAL</code> numera el id, <code>NOT NULL</code> sale de los campos sin <code>?</code> y la llave foránea impide citas con servicios inexistentes.</p>
+              <details class="code-reveal" data-archivo="migration.sql"><summary><span><span class="code-reveal-title">migration.sql · archivo completo</span><span class="code-reveal-note">generado por Prisma · no se edita</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Generado</span><span class="code-file">migration.sql</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-sql">-- CreateEnum
+CREATE TYPE "EstadoCita" AS ENUM ('PENDIENTE', 'CONFIRMADA', 'CANCELADA', 'COMPLETADA');
+
+-- CreateTable
+CREATE TABLE "Servicio" (
+    "id" SERIAL NOT NULL,
+    "nombre" TEXT NOT NULL,
+    "descripcion" TEXT,
+    "duracionMin" INTEGER NOT NULL,
+    "precio" INTEGER NOT NULL,
+    "activo" BOOLEAN NOT NULL DEFAULT true,
+
+    CONSTRAINT "Servicio_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Cita" (
+    "id" SERIAL NOT NULL,
+    "clienteNombre" TEXT NOT NULL,
+    "clienteTelefono" TEXT NOT NULL,
+    "profesional" TEXT NOT NULL,
+    "fechaHora" TIMESTAMP(3) NOT NULL,
+    "estado" "EstadoCita" NOT NULL DEFAULT 'PENDIENTE',
+    "notas" TEXT,
+    "servicioId" INTEGER NOT NULL,
+
+    CONSTRAINT "Cita_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "Cita" ADD CONSTRAINT "Cita_servicioId_fkey" FOREIGN KEY ("servicioId") REFERENCES "Servicio"("id") ON DELETE RESTRICT ON UPDATE CASCADE;</code></pre></div></div></details>
+            </article>
+            <h3>6.3 · Un solo cliente de Prisma</h3>
+            <p>Las tablas existen. Cada conexión a PostgreSQL cuesta: si cada service creara su propio cliente, Agendia abriría conexiones de más. Creamos <strong>un solo</strong> cliente en <code>src/lib/</code> y todos lo importan.</p>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Crear</span><span class="archivo-nombre">prisma.js</span><span class="archivo-ruta">agendia-api/src/lib/</span></div><p class="archivo-intro">Entrega el cliente listo para usar. Lo importan los services, el seed y, en la Clase 4, el service de IA.</p>
+              <div class="lectura"><div class="lectura-head"><span class="lectura-num">1</span><h3 class="lectura-titulo">El cliente necesita adaptador y dirección</h3><p class="lectura-proposito">Prisma 7 separa el cliente del adaptador de PostgreSQL; <code>dotenv</code> carga la dirección antes de crearlos.</p></div><div class="lectura-cuerpo"><div class="code-block" data-role="fragment"><div class="code-head"><div><span class="code-context">Líneas 1–9</span></div></div><pre class="line-numbers" data-start="1"><code class="language-javascript">import 'dotenv/config';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from '../generated/prisma/client.ts';
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+
+const prisma = new PrismaClient({ adapter });
+
+export default prisma;</code></pre></div><ol class="notas"><li class="nota" data-lineas="1"><div class="nota-cabeza"><span class="nota-lineas">L1</span><code class="nota-codigo">import 'dotenv/config'</code></div><p>🟧 dotenv · Ejecuta la carga del <code>.env</code> y copia <code>DATABASE_URL</code> en <code>process.env</code> antes de crear el adaptador.</p></li><li class="nota" data-lineas="2-3"><div class="nota-cabeza"><span class="nota-lineas">L2–3</span><code class="nota-codigo">PrismaPg · PrismaClient</code></div><p>🟧 Prisma · El adaptador sabe hablar con PostgreSQL y el cliente contiene las funciones generadas. Node 24 ejecuta el <code>client.ts</code> directamente.</p></li><li class="nota" data-lineas="5-7"><div class="nota-cabeza"><span class="nota-lineas">L5–7</span><code class="nota-codigo">connectionString · { adapter }</code></div><p>🟩 Node entrega la variable; 🟧 Prisma recibe el adaptador. La forma corta <code>{ adapter }</code> equivale a <code>{ adapter: adapter }</code>.</p></li><li class="nota" data-lineas="9"><div class="nota-cabeza"><span class="nota-lineas">L9</span><code class="nota-codigo">export default prisma</code></div><p>🟨 JavaScript · Entrega el mismo objeto a todos los archivos que lo importen.</p></li></ol></div></div>
+              <div class="active-build"><div class="build-step"><span class="build-step-index">▶</span><div class="build-step-copy"><h3 class="build-step-title">Pruébalo</h3><div class="code-block" data-tipo="terminal"><div class="code-head"><div><span class="code-context">Terminal</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-bash">node --input-type=module -e "import prisma from './src/lib/prisma.js'; console.log(await prisma.servicio.count()); process.exit();"</code></pre></div></div></div><div class="checkpoint"><span class="component-label">Salida esperada</span><h3><code>0</code></h3><p>La conexión funciona y la tabla existe, pero el catálogo todavía está vacío.</p></div></div>
+              <details class="code-reveal" data-archivo="prisma.js"><summary><span><span class="code-reveal-title">prisma.js · archivo completo</span><span class="code-reveal-note">9 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Crear</span><span class="code-file">prisma.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import 'dotenv/config';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from '../generated/prisma/client.ts';
+
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+
+const prisma = new PrismaClient({ adapter });
+
+export default prisma;</code></pre></div></div></details>
+            </article>
+          </div>
+        </section>
+
+        <section class="section view" id="seed" data-accent="1" data-layout="canvas" data-escena="construccion" hidden>
+          <div class="sec-head"><span class="sec-n">Construir · datos iniciales</span><h2 class="sec-t">El catálogo nace en la base</h2><p class="sec-s">Un seed carga los cuatro servicios una vez y permite reproducir el proyecto con un solo comando.</p></div>
+          <div class="body">
+            <p>La tabla <code>Servicio</code> está vacía, pero el catálogo de Huellitas existe: los cuatro servicios del arreglo de la Clase 1. Hay que cargarlos en la base <strong>una vez</strong>, de forma que cualquier compañero que clone el proyecto llegue al mismo catálogo. Ese programa de carga inicial se llama <button class="termino" data-glosario="seed">seed</button>.</p>
+            <h3>7.1 · Sembrar el catálogo</h3>
+            <article class="archivo"><div class="archivo-ficha" data-tipo="apoyo"><span class="archivo-accion">Crear</span><span class="archivo-nombre">seed.js</span><span class="archivo-ruta">agendia-api/prisma/</span></div><p class="archivo-intro">Se corre aparte del servidor y usa el mismo cliente de <code>prisma.js</code>.</p>
+              <details class="code-reveal" data-archivo="seed.js"><summary><span><span class="code-reveal-title">seed.js · archivo completo</span><span class="code-reveal-note">19 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Crear</span><span class="code-file">seed.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import prisma from '../src/lib/prisma.js';
+
+const servicios = [
+  { nombre: 'Baño completo', duracionMin: 60, precio: 45000 },
+  { nombre: 'Corte de raza', duracionMin: 90, precio: 65000 },
+  { nombre: 'Spa relajante', duracionMin: 120, precio: 85000 },
+  { nombre: 'Corte de uñas', duracionMin: 20, precio: 15000 },
+];
+
+const cantidad = await prisma.servicio.count();
+
+if (cantidad === 0) {
+  await prisma.servicio.createMany({ data: servicios });
+  console.log(`Catálogo creado: ${servicios.length} servicios`);
+} else {
+  console.log(`El catálogo ya tiene ${cantidad} servicios: no se cambió nada`);
+}
+
+await prisma.$disconnect();</code></pre></div></div></details>
+            </article>
+            <h3>7.2 · Configurar el comando</h3>
+            <article class="archivo"><div class="archivo-ficha" data-tipo="apoyo"><span class="archivo-accion">Editar</span><span class="archivo-nombre">prisma7.config.ts</span><span class="archivo-ruta">agendia-api/</span></div><p class="archivo-intro">La línea de comandos lee aquí el schema, las migraciones, el comando del seed y la dirección de la base.</p><details class="code-reveal" data-archivo="prisma7.config.ts"><summary><span><span class="code-reveal-title">prisma7.config.ts · archivo completo</span><span class="code-reveal-note">15 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Editar</span><span class="code-file">prisma7.config.ts</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-typescript">// This file was generated by Prisma, and assumes you have installed the following:
+// npm install --save-dev prisma dotenv
+import "dotenv/config";
+import { defineConfig } from "prisma/config";
+
+export default defineConfig({
+  schema: "prisma/schema.prisma",
+  migrations: {
+    path: "prisma/migrations",
+    seed: "node prisma/seed.js",
+  },
+  datasource: {
+    url: process.env["DATABASE_URL"],
+  },
+});</code></pre></div></div></details></article>
+            <div class="code-block" data-tipo="terminal"><div class="code-head"><div><span class="code-context">Terminal · ejecuta el seed</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-bash">npx prisma db seed</code></pre></div>
+            <div class="consola"><div class="consola-head">Primera ejecución</div><ol><li class="out">Running seed command `node prisma/seed.js` ...</li><li class="out">Catálogo creado: 4 servicios</li><li class="out">🌱 The seed command has been executed.</li></ol></div>
+            <div class="consola"><div class="consola-head">Segunda ejecución</div><ol><li class="out">El catálogo ya tiene 4 servicios: no se cambió nada</li></ol></div>
+          </div>
+        </section>
+
+        <section class="section view" id="catalogo" data-accent="1" data-layout="canvas" data-escena="construccion" hidden>
+          <div class="sec-head"><span class="sec-n">Construir · async/await</span><h2 class="sec-t">El catálogo sale de la base</h2><p class="sec-s">El service consulta PostgreSQL y el controlador espera la promesa antes de responder.</p></div>
+          <div class="body">
+            <p>Un arreglo responde al instante. Una base de datos es <strong>otro programa</strong>: la consulta viaja, PostgreSQL la resuelve y la respuesta vuelve. Por eso Prisma devuelve una <button class="termino" data-glosario="promesa">promesa</button>. Para usar el dato hay que esperar con <code>await</code>.</p>
+            <div class="definicion"><div class="def-tecnica"><span class="component-label">Definición técnica</span><p class="def-termino">Promesa</p><p>Una <code>Promise</code> representa un resultado que todavía no existe: puede quedar cumplida con un valor o rechazada con un error. <code>await</code> detiene la función donde está escrito hasta que la promesa se resuelve; solo se usa dentro de una función <code>async</code> o en el nivel superior de un módulo.</p></div><div class="def-vida"><span class="component-label">En la vida real</span><p>Es el turno de la panadería: no es el pan, es la garantía de que te lo van a entregar. <code>await</code> es esperar a que digan tu número antes de irte con el pan.</p></div></div>
+            <h3>8.1 · El service consulta</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar</span><span class="archivo-nombre">servicios.service.js</span><span class="archivo-ruta">agendia-api/src/services/</span></div><p class="archivo-intro">El arreglo desaparece. <code>findMany</code> lista en orden y <code>findUnique</code> busca por la llave primaria.</p><details class="code-reveal" data-archivo="servicios.service.js"><summary><span><span class="code-reveal-title">servicios.service.js · como queda</span><span class="code-reveal-note">9 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Editar</span><span class="code-file">servicios.service.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import prisma from '../lib/prisma.js';
+
+export function listar() {
+  return prisma.servicio.findMany({ orderBy: { id: 'asc' } });
+}
+
+export function buscarPorId(id) {
+  return prisma.servicio.findUnique({ where: { id } });
+}</code></pre></div></div></details></article>
+            <div class="consola"><div class="consola-head">Sin await en el controlador</div><ol><li class="in">GET http://localhost:3000/api/servicios</li><li class="out">{"spec":{"action":"findMany","args":{"orderBy":{"id":"asc"}},"model":"Servicio"}}</li></ol></div>
+            <p>Eso no es el catálogo: es la descripción de una consulta que nadie esperó. El controlador recibió la promesa y la convirtió en JSON antes de que la base respondiera.</p>
+            <h3>8.2 · El controlador espera</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar</span><span class="archivo-nombre">servicios.controller.js</span><span class="archivo-ruta">agendia-api/src/controllers/</span></div><p class="archivo-intro"><code>async</code> permite usar <code>await</code>; <code>res.json</code> responde solo cuando llega el dato.</p><details class="code-reveal" data-archivo="servicios.controller.js"><summary><span><span class="code-reveal-title">servicios.controller.js · como queda</span><span class="code-reveal-note">16 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Editar</span><span class="code-file">servicios.controller.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import * as serviciosService from '../services/servicios.service.js';
+
+export async function listarServicios(req, res) {
+  res.json(await serviciosService.listar());
+}
+
+export async function obtenerServicio(req, res) {
+  const id = Number(req.params.id);
+  const servicio = await serviciosService.buscarPorId(id);
+
+  if (!servicio) {
+    return res.status(404).json({ error: `No existe el servicio con id ${id}` });
+  }
+
+  res.json(servicio);
+}</code></pre></div></div></details></article>
+            <div class="consola"><div class="consola-head">GET /api/servicios</div><ol><li class="out">[{"id":1,"nombre":"Baño completo","descripcion":null,"duracionMin":60,"precio":45000,"activo":true}, …]</li></ol></div>
+            <div class="checkpoint"><span class="component-label">Checkpoint</span><h3>El catálogo viene de PostgreSQL.</h3><p>Cada servicio trae ahora <code>descripcion</code> vacía y <code>activo</code>, las columnas nuevas del schema.</p></div>
+          </div>
+        </section>
+
+        <section class="section view" id="errores" data-accent="1" data-layout="canvas" data-escena="construccion" hidden>
+          <div class="sec-head"><span class="sec-n">Construir · errores</span><h2 class="sec-t">El service decide; el middleware responde</h2><p class="sec-s">Un único formato JSON atiende 400, 404 y 409 sin repetir condiciones en los controladores.</p></div>
+          <div class="body">
+            <p><code>/api/servicios/abc</code> produce una página HTML de error 500 con rutas internas. El cliente se equivocó: debería recibir <strong>400</strong>, en JSON y sin detalles del servidor. Además, el mismo <code>if</code> de 404 estaba repetido entre servicios y citas.</p>
+            <div class="definicion"><div class="def-tecnica"><span class="component-label">Definición técnica</span><p class="def-termino">Middleware de errores</p><p>En Express es una función con <strong>cuatro</strong> parámetros <code>(err, req, res, next)</code>, registrada con <code>app.use</code> después de las rutas. Express la ejecuta cuando una pieza anterior produce un error.</p></div><div class="def-vida"><span class="component-label">En la vida real</span><p>Es la oficina de atención al cliente de un almacén: cuando algo falla en cualquier sección, todos mandan el caso a la misma oficina, que contesta siempre con el mismo formato y sin mostrar la bodega.</p></div></div>
+            <div class="pipeline" role="group" aria-label="Viaje de un error"><div class="pipe-step"><span class="component-label">Service</span><h3>Decide</h3><ul><li>throw ErrorHttp</li></ul></div><div class="pipe-arrow" aria-hidden="true">→</div><div class="pipe-step" data-emphasis><span class="component-label">Express 5</span><h3>Transporta</h3><ul><li>next(err)</li></ul></div><div class="pipe-arrow" aria-hidden="true">→</div><div class="pipe-step"><span class="component-label">Middleware</span><h3>Responde</h3><ul><li>{ error }</li></ul></div></div>
+            <h3>9.1 · Un error con código HTTP</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Crear</span><span class="archivo-nombre">error-http.js</span><span class="archivo-ruta">agendia-api/src/lib/</span></div><p class="archivo-intro">Hereda el mensaje y la traza de <code>Error</code>, y guarda el código que el middleware debe responder.</p><details class="code-reveal" data-archivo="error-http.js"><summary><span><span class="code-reveal-title">error-http.js · completo</span><span class="code-reveal-note">6 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Crear</span><span class="code-file">error-http.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">export class ErrorHttp extends Error {
+  constructor(status, mensaje) {
+    super(mensaje);
+    this.status = status;
+  }
+}</code></pre></div></div></details></article>
+            <h3>9.2 · Validar el id una sola vez</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Crear</span><span class="archivo-nombre">validaciones.js</span><span class="archivo-ruta">agendia-api/src/lib/</span></div><p class="archivo-intro"><code>leerId</code> convierte y rechaza texto, decimales, cero y negativos; <code>exigirTexto</code> reutiliza la revisión de campos obligatorios.</p><details class="code-reveal" data-archivo="validaciones.js"><summary><span><span class="code-reveal-title">validaciones.js · versión final</span><span class="code-reveal-note">15 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Crear y editar</span><span class="code-file">validaciones.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import { ErrorHttp } from './error-http.js';
+
+export function leerId(valor, recurso) {
+  const id = Number(valor);
+  if (!Number.isInteger(id) || id &lt;= 0) {
+    throw new ErrorHttp(400, `El id de ${recurso} debe ser un número entero positivo (llegó "${valor}")`);
+  }
+  return id;
+}
+
+export function exigirTexto(datos, campo) {
+  if (typeof datos[campo] !== 'string' || datos[campo].trim() === '') {
+    throw new ErrorHttp(400, `El campo ${campo} es obligatorio y debe ser un texto`);
+  }
+}</code></pre></div></div></details></article>
+            <h3>9.3 · La oficina de atención</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Crear</span><span class="archivo-nombre">errores.middleware.js</span><span class="archivo-ruta">agendia-api/src/middlewares/</span></div><p class="archivo-intro">Reconoce los errores del proyecto, el JSON mal escrito y deja el detalle de cualquier falla inesperada solo en la terminal.</p><details class="code-reveal" data-archivo="errores.middleware.js"><summary><span><span class="code-reveal-title">errores.middleware.js · versión final</span><span class="code-reveal-note">14 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Crear y editar</span><span class="code-file">errores.middleware.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import { ErrorHttp } from '../lib/error-http.js';
+
+export function manejarErrores(err, req, res, next) {
+  if (err instanceof ErrorHttp) {
+    return res.status(err.status).json({ error: err.message });
+  }
+
+  if (err.type === 'entity.parse.failed') {
+    return res.status(400).json({ error: 'El cuerpo de la petición no es un JSON válido' });
+  }
+
+  console.error(err);
+  res.status(500).json({ error: 'Ocurrió un error inesperado en el servidor' });
+}</code></pre></div></div></details></article>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar</span><span class="archivo-nombre">app.js</span><span class="archivo-ruta">agendia-api/src/</span></div><p class="archivo-intro">El import trae el manejador y <code>app.use(manejarErrores)</code> lo registra después de las rutas: Express recorre los middlewares en orden.</p><details class="code-reveal" data-archivo="app.js"><summary><span><span class="code-reveal-title">app.js · versión final de hoy</span><span class="code-reveal-note">19 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Editar</span><span class="code-file">app.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import express from 'express';
+import serviciosRouter from './routes/servicios.routes.js';
+import citasRouter from './routes/citas.routes.js';
+import { manejarErrores } from './middlewares/errores.middleware.js';
+
+const app = express();
+
+app.use(express.json());
+
+app.get('/api/salud', (req, res) => {
+  res.json({ estado: 'ok', servicio: 'agendia-api' });
+});
+
+app.use('/api/servicios', serviciosRouter);
+app.use('/api/citas', citasRouter);
+
+app.use(manejarErrores);
+
+export default app;</code></pre></div></div></details></article>
+            <div class="callout" data-tone="warning"><span class="callout-icon">!</span><div><h3>Quítala y mira</h3><p>Si borras <code>next</code> del cuarto parámetro, Express ya no reconoce la función como manejador de errores y vuelve a responder su página HTML.</p></div></div>
+          </div>
+        </section>
+
+        <section class="section view" id="citas" data-accent="1" data-layout="canvas" data-escena="construccion" hidden>
+          <div class="sec-head"><span class="sec-n">Construir · persistencia</span><h2 class="sec-t">Las citas viven en PostgreSQL</h2><p class="sec-s">Validar, guardar, consultar, cambiar estado y eliminar: el mismo contrato de la Clase 2, sin arreglos en memoria.</p></div>
+          <div class="body">
+            <h3>10.1 · El service de citas</h3>
+            <p>Una cita llega con seis campos que cualquiera puede mandar mal. Primero se exigen los textos, se valida la fecha y se comprueba que el servicio exista. La base pone el <code>id</code> y el estado inicial.</p>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Reemplazar</span><span class="archivo-nombre">citas.service.js</span><span class="archivo-ruta">agendia-api/src/services/</span></div><p class="archivo-intro">Esta primera versión ya persiste y valida. La regla de cruce se agrega en la escena siguiente.</p><details class="code-reveal" data-archivo="citas.service.js"><summary><span><span class="code-reveal-title">citas.service.js · como queda</span><span class="code-reveal-note">62 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Reemplazar</span><span class="code-file">citas.service.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import prisma from '../lib/prisma.js';
+import { ErrorHttp } from '../lib/error-http.js';
+import { leerId, exigirTexto } from '../lib/validaciones.js';
+import * as serviciosService from './servicios.service.js';
+
+const ESTADOS = ['PENDIENTE', 'CONFIRMADA', 'CANCELADA', 'COMPLETADA'];
+
+function validarCita(datos) {
+  exigirTexto(datos, 'clienteNombre');
+  exigirTexto(datos, 'clienteTelefono');
+  exigirTexto(datos, 'profesional');
+  if (typeof datos.fechaHora !== 'string' || Number.isNaN(Date.parse(datos.fechaHora))) {
+    throw new ErrorHttp(400, 'fechaHora debe ser una fecha válida, por ejemplo "2026-11-07T15:00:00-05:00"');
+  }
+}
+
+export async function crear(datos = {}) {
+  validarCita(datos);
+  const servicio = await serviciosService.buscarPorId(datos.servicioId);
+  const fechaHora = new Date(datos.fechaHora);
+
+  return prisma.cita.create({
+    data: {
+      servicioId: servicio.id,
+      clienteNombre: datos.clienteNombre,
+      clienteTelefono: datos.clienteTelefono,
+      profesional: datos.profesional,
+      fechaHora,
+      notas: datos.notas,
+    },
+  });
+}
+
+export function listar() {
+  return prisma.cita.findMany({ orderBy: { fechaHora: 'asc' } });
+}
+
+export async function buscarPorId(valorId) {
+  const id = leerId(valorId, 'cita');
+  const cita = await prisma.cita.findUnique({ where: { id } });
+
+  if (!cita) {
+    throw new ErrorHttp(404, `No existe la cita con id ${id}`);
+  }
+
+  return cita;
+}
+
+export async function cambiarEstado(valorId, estado) {
+  const cita = await buscarPorId(valorId);
+
+  if (!ESTADOS.includes(estado)) {
+    throw new ErrorHttp(400, `El estado debe ser uno de: ${ESTADOS.join(', ')}`);
+  }
+
+  return prisma.cita.update({ where: { id: cita.id }, data: { estado } });
+}
+
+export async function eliminar(valorId) {
+  const cita = await buscarPorId(valorId);
+  await prisma.cita.delete({ where: { id: cita.id } });
+}</code></pre></div></div></details></article>
+            <h3>10.2 · Controladores que esperan</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Reemplazar</span><span class="archivo-nombre">citas.controller.js</span><span class="archivo-ruta">agendia-api/src/controllers/</span></div><p class="archivo-intro">Cada función espera al service; si este lanza, Express 5 transporta el error al middleware sin <code>try/catch</code>.</p><details class="code-reveal" data-archivo="citas.controller.js"><summary><span><span class="code-reveal-title">citas.controller.js · versión final</span><span class="code-reveal-note">23 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Reemplazar</span><span class="code-file">citas.controller.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import * as citasService from '../services/citas.service.js';
+
+export async function crearCita(req, res) {
+  const cita = await citasService.crear(req.body);
+  res.status(201).json(cita);
+}
+
+export async function listarCitas(req, res) {
+  res.json(await citasService.listar());
+}
+
+export async function obtenerCita(req, res) {
+  res.json(await citasService.buscarPorId(req.params.id));
+}
+
+export async function cambiarEstadoCita(req, res) {
+  res.json(await citasService.cambiarEstado(req.params.id, req.body?.estado));
+}
+
+export async function eliminarCita(req, res) {
+  await citasService.eliminar(req.params.id);
+  res.status(204).end();
+}</code></pre></div></div></details></article>
+            <h3>10.3 · Probar la persistencia</h3>
+            <div class="consola"><div class="consola-head">POST /api/citas · 201 Created</div><ol><li class="in">{"servicioId":2,"clienteNombre":"Laura Gómez","clienteTelefono":"3104567890","profesional":"Dana","fechaHora":"2026-11-07T15:00:00-05:00","notas":"Golden, se pone nervioso con el secador"}</li><li class="out">{"id":1,"clienteNombre":"Laura Gómez","clienteTelefono":"3104567890","profesional":"Dana","fechaHora":"2026-11-07T20:00:00.000Z","estado":"PENDIENTE","notas":"Golden, se pone nervioso con el secador","servicioId":2}</li></ol></div>
+            <p>La cita es de las 3:00 p. m. en Colombia (<code>-05:00</code>) y la base la devuelve como <code>20:00:00.000Z</code>: la misma hora en UTC.</p>
+            <div class="consola"><div class="consola-head">Casos de validación</div><ol><li class="in">POST sin clienteNombre</li><li class="out">400 · {"error":"El campo clienteNombre es obligatorio y debe ser un texto"}</li><li class="in">PATCH con {"estado":"QUIZAS"}</li><li class="out">400 · {"error":"El estado debe ser uno de: PENDIENTE, CONFIRMADA, CANCELADA, COMPLETADA"}</li></ol></div>
+            <div class="checkpoint"><span class="component-label">Prueba del reinicio</span><h3>Apaga, vuelve a encender y pide <code>GET /api/citas/1</code>.</h3><p>La cita sigue ahí: sobrevivió al reinicio.</p></div>
+            <div class="micro-task"><span class="component-label">Para pensar</span><p class="micro-task-q">En Postman, envía el <code>POST</code> con el cuerpo mal escrito: borra la llave <code>}</code> del final. ¿Qué código esperas y qué código recibes?</p><details class="micro-reveal"><summary>Comprobar</summary><p class="micro-answer">Recibes <code>500</code> con "Ocurrió un error inesperado en el servidor". <code>express.json()</code> no pudo leer el texto y lanzó su propio error. Es un error del cliente: el middleware final lo reconoce por <code>entity.parse.failed</code> y responde 400.</p></details></div>
+          </div>
+        </section>
+
+        <section class="section view" id="conflicto" data-accent="1" data-layout="canvas" data-escena="construccion" hidden>
+          <div class="sec-head"><span class="sec-n">Construir · regla de negocio</span><h2 class="sec-t">Dana no puede estar en dos citas</h2><p class="sec-s">La duración de ambos servicios decide si dos franjas de tiempo se cruzan.</p></div>
+          <div class="body">
+            <div class="table-wrap"><table class="data-table"><caption>Cuándo se cruza una cita con Laura (3:00–4:30)</caption><thead><tr><th>Cita</th><th>Empieza</th><th>Termina</th><th>Resultado</th></tr></thead><tbody><tr><td>Andrés con Dana</td><td>4:00</td><td>5:00</td><td data-emphasis>Sí: 3:00 &lt; 5:00 y 4:00 &lt; 4:30</td></tr><tr><td>Andrés con Dana</td><td>4:30</td><td>5:30</td><td>No: 4:30 &lt; 4:30 es falso</td></tr><tr><td>Andrés con Camilo</td><td>4:00</td><td>5:00</td><td>No: es otro groomer</td></tr></tbody></table></div>
+            <div class="micro-task"><span class="component-label">Para pensar</span><p class="micro-task-q">Si la regla fuera "dos citas se cruzan si empiezan a la misma hora", ¿qué cita de la tabla se colaría?</p><details class="micro-reveal"><summary>Comprobar</summary><p class="micro-answer">La de Andrés a las 4:00: no empieza a la misma hora que la de Laura (3:00), pero Dana todavía está con el golden hasta las 4:30. Comparar solo el inicio ignora cuánto dura cada servicio.</p></details></div>
+            <div class="definicion"><div class="def-tecnica"><span class="component-label">Definición técnica</span><p class="def-termino">409 Conflict</p><p>Indica que la petición está bien formada, pero choca con el <strong>estado actual</strong> del recurso. Los datos de Andrés son correctos; la agenda de Dana ya está ocupada.</p></div><div class="def-vida"><span class="component-label">Regla</span><p>Dos franjas se cruzan si una empieza antes de que la otra termine, y la otra empieza antes de que la primera termine.</p></div></div>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar</span><span class="archivo-nombre">citas.service.js</span><span class="archivo-ruta">agendia-api/src/services/</span></div><p class="archivo-intro"><code>terminaEn</code> suma la duración; <code>include</code> trae el servicio de cada cita guardada; el filtro ignora las canceladas.</p><details class="code-reveal" data-archivo="citas.service.js"><summary><span><span class="code-reveal-title">citas.service.js · versión final</span><span class="code-reveal-note">82 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Editar</span><span class="code-file">citas.service.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import prisma from '../lib/prisma.js';
+import { ErrorHttp } from '../lib/error-http.js';
+import { leerId, exigirTexto } from '../lib/validaciones.js';
+import * as serviciosService from './servicios.service.js';
+
+const ESTADOS = ['PENDIENTE', 'CONFIRMADA', 'CANCELADA', 'COMPLETADA'];
+
+function validarCita(datos) {
+  exigirTexto(datos, 'clienteNombre');
+  exigirTexto(datos, 'clienteTelefono');
+  exigirTexto(datos, 'profesional');
+  if (typeof datos.fechaHora !== 'string' || Number.isNaN(Date.parse(datos.fechaHora))) {
+    throw new ErrorHttp(400, 'fechaHora debe ser una fecha válida, por ejemplo "2026-11-07T15:00:00-05:00"');
+  }
+}
+
+const MINUTO_MS = 60 * 1000;
+
+function terminaEn(inicio, duracionMin) {
+  return new Date(inicio.getTime() + duracionMin * MINUTO_MS);
+}
+
+async function verificarAgendaLibre(profesional, inicio, duracionMin) {
+  const fin = terminaEn(inicio, duracionMin);
+  const citas = await prisma.cita.findMany({
+    where: { profesional, estado: { not: 'CANCELADA' } },
+    include: { servicio: true },
+  });
+  const cruce = citas.find((cita) =&gt;
+    cita.fechaHora &lt; fin &amp;&amp; inicio &lt; terminaEn(cita.fechaHora, cita.servicio.duracionMin));
+  if (cruce) {
+    throw new ErrorHttp(409, `${profesional} ya tiene la cita ${cruce.id} en ese horario`);
+  }
+}
+
+export async function crear(datos = {}) {
+  validarCita(datos);
+  const servicio = await serviciosService.buscarPorId(datos.servicioId);
+  const fechaHora = new Date(datos.fechaHora);
+  await verificarAgendaLibre(datos.profesional, fechaHora, servicio.duracionMin);
+
+  return prisma.cita.create({
+    data: {
+      servicioId: servicio.id,
+      clienteNombre: datos.clienteNombre,
+      clienteTelefono: datos.clienteTelefono,
+      profesional: datos.profesional,
+      fechaHora,
+      notas: datos.notas,
+    },
+  });
+}
+
+export function listar() {
+  return prisma.cita.findMany({ orderBy: { fechaHora: 'asc' } });
+}
+
+export async function buscarPorId(valorId) {
+  const id = leerId(valorId, 'cita');
+  const cita = await prisma.cita.findUnique({ where: { id } });
+
+  if (!cita) throw new ErrorHttp(404, `No existe la cita con id ${id}`);
+  return cita;
+}
+
+export async function cambiarEstado(valorId, estado) {
+  const cita = await buscarPorId(valorId);
+  if (!ESTADOS.includes(estado)) {
+    throw new ErrorHttp(400, `El estado debe ser uno de: ${ESTADOS.join(', ')}`);
+  }
+  return prisma.cita.update({ where: { id: cita.id }, data: { estado } });
+}
+
+export async function eliminar(valorId) {
+  const cita = await buscarPorId(valorId);
+  await prisma.cita.delete({ where: { id: cita.id } });
+}</code></pre></div></div></details></article>
+            <div class="consola"><div class="consola-head">Pruebas de la agenda</div><ol><li class="in">Dana · 4:00 p. m.</li><li class="out">409 · {"error":"Dana ya tiene la cita 1 en ese horario"}</li><li class="in">Dana · 4:30 p. m.</li><li class="out">201 · la cita se acepta</li><li class="in">Camilo · 4:00 p. m.</li><li class="out">201 · la cita se acepta</li></ol></div>
+            <div class="callout" data-tone="warning"><span class="callout-icon">!</span><div><h3>Quítala y mira</h3><p>Si borras <code>include: { servicio: true }</code>, <code>cita.servicio</code> vale <code>undefined</code> y leer <code>duracionMin</code> produce un 500. La relación del schema no se trae sola: hay que pedirla.</p></div></div>
+          </div>
+        </section>
+
+        <section class="section view" id="crud" data-accent="1" data-layout="canvas" data-escena="construccion" hidden>
+          <div class="sec-head"><span class="sec-n">Construir · CRUD</span><h2 class="sec-t">Valentina administra su catálogo</h2><p class="sec-s">Crear, reemplazar y retirar servicios con validaciones y protección de la historia.</p></div>
+          <div class="body">
+            <p>Para agregar "Deslanado" nadie debería editar el seed ni entrar a la base. El catálogo necesita <code>POST</code>, <code>PUT</code> y <code>DELETE</code>. <code>PATCH</code> cambia una parte; el formulario de Valentina envía el servicio completo, por eso aquí usamos <strong>PUT</strong>.</p>
+            <h3>12.1 · Reglas y persistencia</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar</span><span class="archivo-nombre">servicios.service.js</span><span class="archivo-ruta">agendia-api/src/services/</span></div><p class="archivo-intro">El nombre es obligatorio; duración y precio son enteros válidos. Un servicio con citas no se borra: responde 409 antes de que la llave foránea lo rechace con un mensaje técnico.</p><details class="code-reveal" data-archivo="servicios.service.js"><summary><span><span class="code-reveal-title">servicios.service.js · versión final</span><span class="code-reveal-note">65 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Editar</span><span class="code-file">servicios.service.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import prisma from '../lib/prisma.js';
+import { ErrorHttp } from '../lib/error-http.js';
+import { leerId, exigirTexto } from '../lib/validaciones.js';
+
+function validarServicio(datos) {
+  exigirTexto(datos, 'nombre');
+  if (!Number.isInteger(datos.duracionMin) || datos.duracionMin &lt;= 0) {
+    throw new ErrorHttp(400, 'duracionMin debe ser un número entero mayor que 0');
+  }
+  if (!Number.isInteger(datos.precio) || datos.precio &lt; 0) {
+    throw new ErrorHttp(400, 'precio debe ser un número entero de 0 o más');
+  }
+}
+
+export function listar() {
+  return prisma.servicio.findMany({ orderBy: { id: 'asc' } });
+}
+
+export async function buscarPorId(valorId) {
+  const id = leerId(valorId, 'servicio');
+  const servicio = await prisma.servicio.findUnique({ where: { id } });
+  if (!servicio) throw new ErrorHttp(404, `No existe el servicio con id ${id}`);
+  return servicio;
+}
+
+export function crear(datos = {}) {
+  validarServicio(datos);
+  return prisma.servicio.create({
+    data: { nombre: datos.nombre, descripcion: datos.descripcion, duracionMin: datos.duracionMin, precio: datos.precio },
+  });
+}
+
+export async function actualizar(valorId, datos = {}) {
+  const servicio = await buscarPorId(valorId);
+  validarServicio(datos);
+  return prisma.servicio.update({
+    where: { id: servicio.id },
+    data: { nombre: datos.nombre, descripcion: datos.descripcion, duracionMin: datos.duracionMin, precio: datos.precio },
+  });
+}
+
+export async function eliminar(valorId) {
+  const servicio = await buscarPorId(valorId);
+  const citas = await prisma.cita.count({ where: { servicioId: servicio.id } });
+  if (citas &gt; 0) {
+    throw new ErrorHttp(409, `No se puede eliminar "${servicio.nombre}": tiene ${citas} cita(s) registradas`);
+  }
+  await prisma.servicio.delete({ where: { id: servicio.id } });
+}</code></pre></div></div></details></article>
+            <h3>12.2 · Controladores y rutas</h3>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar</span><span class="archivo-nombre">servicios.controller.js</span><span class="archivo-ruta">agendia-api/src/controllers/</span></div><p class="archivo-intro">Crear responde 201, actualizar devuelve el recurso y eliminar termina con 204.</p><details class="code-reveal" data-archivo="servicios.controller.js"><summary><span><span class="code-reveal-title">servicios.controller.js · versión final</span><span class="code-reveal-note">23 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Editar</span><span class="code-file">servicios.controller.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import * as serviciosService from '../services/servicios.service.js';
+
+export async function listarServicios(req, res) {
+  res.json(await serviciosService.listar());
+}
+
+export async function obtenerServicio(req, res) {
+  res.json(await serviciosService.buscarPorId(req.params.id));
+}
+
+export async function crearServicio(req, res) {
+  const servicio = await serviciosService.crear(req.body);
+  res.status(201).json(servicio);
+}
+
+export async function actualizarServicio(req, res) {
+  res.json(await serviciosService.actualizar(req.params.id, req.body));
+}
+
+export async function eliminarServicio(req, res) {
+  await serviciosService.eliminar(req.params.id);
+  res.status(204).end();
+}</code></pre></div></div></details></article>
+            <article class="archivo"><div class="archivo-ficha"><span class="archivo-accion">Editar</span><span class="archivo-nombre">servicios.routes.js</span><span class="archivo-ruta">agendia-api/src/routes/</span></div><p class="archivo-intro">Las rutas conectan cada método HTTP con su controlador.</p><details class="code-reveal" data-archivo="servicios.routes.js"><summary><span><span class="code-reveal-title">servicios.routes.js · versión final</span><span class="code-reveal-note">18 líneas · listo para copiar</span></span></summary><div class="code-reveal-body"><div class="code-block"><div class="code-head"><div><span class="code-context">Editar</span><span class="code-file">servicios.routes.js</span></div><button class="copy-btn" type="button">Copiar archivo</button></div><pre class="line-numbers"><code class="language-javascript">import { Router } from 'express';
+import {
+  listarServicios,
+  obtenerServicio,
+  crearServicio,
+  actualizarServicio,
+  eliminarServicio,
+} from '../controllers/servicios.controller.js';
+
+const router = Router();
+
+router.get('/', listarServicios);
+router.get('/:id', obtenerServicio);
+router.post('/', crearServicio);
+router.put('/:id', actualizarServicio);
+router.delete('/:id', eliminarServicio);
+
+export default router;</code></pre></div></div></details></article>
+            <h3>12.3 · Probar el CRUD</h3>
+            <div class="table-wrap"><table class="data-table"><caption>Casos en Postman</caption><thead><tr><th>Petición</th><th>Resultado</th></tr></thead><tbody><tr><td><code>POST</code> Deslanado · 75 · 55000</td><td>201 · servicio id 5, activo</td></tr><tr><td><code>POST</code> con <code>"duracionMin":"75"</code></td><td>400 · debe ser un número entero mayor que 0</td></tr><tr><td><code>PUT /5</code> Deslanado profundo · 80 · 60000</td><td>200 · recurso actualizado</td></tr><tr><td><code>DELETE /2</code></td><td>409 · Corte de raza tiene una cita registrada</td></tr><tr><td><code>DELETE /5</code></td><td>204 · sin cuerpo</td></tr></tbody></table></div>
+            <div class="momento-ia"><div class="momento-ia-head"><span class="momento-ia-titulo">Momento IA</span><span class="ia-nivel">Nivel 1 · Revisor</span><span class="ia-herramienta">Cursor · modo Ask</span></div><div class="momento-ia-body"><div class="ia-grid"><div><span class="component-label">Primero razonas tú</span><p>Escribe en un comentario o en tu cuaderno dos casos que creas que <code>citas.service.js</code> todavía deja pasar.</p></div><div class="ia-no-delega"><span class="component-label">No se delega</span><p>Decidir qué es una regla del negocio. Nunca pegues tu <code>.env</code>: tiene tu contraseña.</p></div></div><div class="code-block" data-tipo="prompt"><div class="code-head"><div><span class="code-context">Prompt sugerido</span><span class="code-file">Cursor</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-plaintext">Estoy aprendiendo backend con Node.js, Express 5 y Prisma 7. Este es mi `citas.service.js` [pega el archivo]. Las reglas del negocio son: toda cita necesita cliente, teléfono, groomer, fecha válida y un servicio que exista, y un groomer no puede tener dos citas que se crucen. No me reescribas el archivo. Hazme una lista de máximo cinco casos que mi código no está cubriendo, explicando cada uno con un ejemplo de JSON que lo provoque.</code></pre></div><div><span class="component-label">Cómo validar la respuesta</span><ul class="checklist"><li>Prueba en Postman el JSON de cada caso.</li><li>Si Agendia ya lo rechaza, descártalo.</li><li>Si pasa, decide tú si es una regla del negocio de Valentina y solo entonces cambia el código.</li></ul></div></div></div>
+          </div>
+        </section>
+
+        <section class="section view" id="traza" data-accent="1" data-layout="canvas" data-escena="prueba" hidden>
+          <div class="sec-head"><span class="sec-n">Probar</span><h2 class="sec-t">El POST de Andrés, de punta a punta</h2><p class="sec-s">El error nace en el service, viaja como promesa rechazada y termina como una respuesta 409.</p></div>
+          <div class="body">
+            <div class="consola"><div class="consola-head">Traza completa</div><ol><li class="in">POST /api/citas {"servicioId":1,"profesional":"Dana","fechaHora":"2026-11-07T16:00:00-05:00",…}</li><li class="out">express.json() convierte el texto en req.body</li><li class="out">app.use('/api/citas', citasRouter) → router.post('/') → crearCita(req, res)</li><li class="out">validarCita(datos) → textos y fecha OK</li><li class="out">serviciosService.buscarPorId(1) → Baño completo, 60 min</li><li class="out">fechaHora = 2026-11-07T21:00:00.000Z</li><li class="out">verificarAgendaLibre("Dana", 21:00Z, 60) → fin = 22:00Z</li><li class="out">findMany(Dana, no canceladas, include servicio) → cita 1: 20:00Z, Corte de raza 90 min</li><li class="out">20:00 &lt; 22:00 y 21:00 &lt; 21:30 → se cruzan</li><li class="out">throw new ErrorHttp(409, "Dana ya tiene la cita 1 en ese horario")</li><li class="out">Express 5 llama a next(err)</li><li class="out">manejarErrores(err) → res.status(409).json({ error })</li><li class="out">409 Conflict {"error":"Dana ya tiene la cita 1 en ese horario"}</li></ol></div>
+            <div class="checkpoint"><span class="component-label">Idea clave</span><h3>Nadie escribió un <code>if</code> en el controlador ni un <code>try/catch</code>.</h3><p>El error viajó solo desde el service hasta la oficina de atención.</p></div>
+          </div>
+        </section>
+
+        <section class="section view" id="guardar" data-accent="1" data-layout="canvas" data-escena="prueba" hidden>
+          <div class="sec-head"><span class="sec-n">Probar · guardar</span><h2 class="sec-t">Entrega reproducible y errores legibles</h2></div>
+          <div class="body">
+            <h3>14.1 · Colección y GitHub</h3>
+            <p>Agrega a <strong>Agendia API</strong> las peticiones nuevas de servicios (<code>POST</code>, <code>PUT</code>, <code>DELETE</code>) y la cita que choca (409). Exporta de nuevo como <strong>Collection v2.1</strong> sobre <code>postman/agendia-api.postman_collection.json</code>.</p>
+            <div class="code-block" data-tipo="terminal"><div class="code-head"><div><span class="code-context">Terminal · revisa qué subirá</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-bash">git status</code></pre></div>
+            <p>Debes ver <code>prisma/</code>, <code>prisma7.config.ts</code>, <code>.env.example</code>, <code>src/lib/</code>, <code>src/middlewares/</code> y los archivos modificados. <strong>No</strong> deben aparecer <code>.env</code> ni <code>src/generated/</code>.</p>
+            <div class="code-block" data-tipo="terminal"><div class="code-head"><div><span class="code-context">Terminal · guarda el avance</span></div><button class="copy-btn" type="button">Copiar</button></div><pre><code class="language-bash">git add .
+git commit -m "feat: persistencia con Prisma, validaciones y regla de cruce de citas"
+git push</code></pre></div>
+            <div class="callout" data-tone="warning"><span class="callout-icon">!</span><div><h3>Ojo técnico</h3><p>Quien clone el repositorio debe crear su <code>.env</code> desde <code>.env.example</code> y correr <code>npx prisma migrate dev</code>, <code>npx prisma generate</code> y <code>npx prisma db seed</code>. Sin <code>generate</code>, el servidor no arranca.</p></div></div>
+            <h3>14.2 · Errores frecuentes</h3>
+            <div class="table-wrap"><table class="data-table"><caption>Cómo leerlos</caption><thead><tr><th>Lo que ves</th><th>Qué significa</th><th>Cómo lo arreglas</th></tr></thead><tbody><tr><td><code>P1000</code></td><td>Usuario o contraseña incorrectos</td><td>Corrige <code>DATABASE_URL</code>; codifica <code>@</code> y <code>#</code>.</td></tr><tr><td><code>P1001</code></td><td>No se alcanza PostgreSQL</td><td>Enciende el servicio y revisa 5432 o 5433.</td></tr><tr><td><code>ERR_MODULE_NOT_FOUND</code> para <code>client.ts</code></td><td>No se generó el cliente</td><td><code>npx prisma generate</code></td></tr><tr><td>Driver adapter required</td><td>PrismaClient nació sin adaptador</td><td>Revisa <code>new PrismaClient({ adapter })</code>.</td></tr><tr><td><code>{"spec":…}</code> o <code>{}</code></td><td>El controlador respondió una promesa</td><td>Agrega <code>async</code> y <code>await</code>.</td></tr><tr><td>Página HTML de error</td><td>El manejador no está registrado al final o tiene tres parámetros</td><td><code>app.use(manejarErrores)</code> y <code>(err, req, res, next)</code>.</td></tr><tr><td><code>ReferenceError: leerId is not defined</code></td><td>Falta un import</td><td>Agrega el <code>import</code> correspondiente.</td></tr><tr><td><code>P1012</code></td><td>Error en el schema</td><td>Lee la flecha <code>--&gt;</code>; suele faltar un lado de la relación.</td></tr><tr><td>Update available 7 → 8 RC</td><td>npm ofrece la versión de prueba</td><td>Ignóralo: el curso usa Prisma 7.</td></tr></tbody></table></div>
+          </div>
+        </section>
+
+        <section class="section view" id="cierre" data-accent="1" data-layout="canvas" data-escena="cierre" hidden>
+          <div class="sec-head"><span class="sec-n">Cierre</span><h2 class="sec-t">Agendia ya no pierde citas</h2></div>
+          <div class="body">
+            <p>Valentina perdió la agenda de un sábado porque las citas vivían en la memoria del servidor, y Agendia dejó cruzar dos perros con Dana. Hoy las citas y el catálogo viven en PostgreSQL y sobreviven a cualquier reinicio; la API rechaza los datos incompletos con 400, avisa con 404 lo que no existe y responde 409 cuando un groomer ya está ocupado.</p>
+            <ol class="ideas"><li><span><strong>Modelado relacional:</strong> una tabla por tipo de cosa, una llave primaria por fila y una llave foránea en el lado "muchos".</span></li><li><span><strong>ORM con Prisma:</strong> el schema describe, la migración crea y el cliente consulta. Como cada consulta tarda, se espera con <code>await</code>.</span></li><li><span><strong>Errores centralizados:</strong> el service lanza un <code>ErrorHttp</code>; un solo middleware lo responde.</span></li></ol>
+            <article class="correo"><div class="correo-head"><span class="correo-avatar">EQ</span><div><div class="correo-remitente">Equipo de desarrollo</div><div class="correo-ruta">Para: Valentina Rojas · valentina@huellitasspa.co</div></div></div><div class="correo-asunto">Agendia ya no pierde citas</div><div class="correo-body"><p>Hola, Valentina:</p><p>Desde hoy las citas y el catálogo de Huellitas se guardan en una base de datos. Si el servidor se reinicia, todo sigue ahí: hicimos la prueba apagándolo con citas registradas.</p><p>Agendia ya no deja anotar dos perros con el mismo groomer en horarios que se cruzan: tiene en cuenta cuánto dura cada servicio, así que Dana no puede tener un corte de raza a las 3:00 p. m. y otro perro a las 4:00 p. m. Si la recepcionista lo intenta, el sistema le dice con qué cita choca. Además, ahora puedes agregar, editar y retirar servicios del catálogo.</p><p>La próxima semana conectamos la inteligencia artificial: un recordatorio personalizado para cada cliente, redactado con los datos reales de su cita.</p><p>Saludos,<br>Equipo Agendia</p></div></article>
+            <div class="papel"><span class="component-label">Lo que queda abierto</span><p>Valentina pierde unas seis citas a la semana porque los clientes olvidan ir, y escribir cada recordatorio le toma tiempo. La llave de la IA irá en el mismo <code>.env</code> que hoy guarda la contraseña de la base.</p></div>
+            <p><strong>Puente a la Clase 4.</strong> Agendia usa la API de OpenAI desde Node: un endpoint redacta el recordatorio de una cita con sus datos reales y otro escribe la descripción comercial de un servicio.</p>
+            <div class="mision"><div class="mision-head"><span class="mision-marca">3</span><span class="mision-titulo">Taller del módulo · Fase 3</span></div><div class="mision-grid"><div class="mision-item"><span class="component-label">Para la situación</span><p>Lucía, de Estudio Prana, perdió las inscripciones cuando el servidor se reinició y necesita que nadie se inscriba a una clase llena.</p></div><div class="mision-item"><span class="component-label">Lo que haces</span><p>Actualiza tu fork, crea la base <code>prana</code>, modela <code>Clase</code> e <code>Inscripcion</code>, migra, crea el seed, reescribe los services con Prisma y agrega CRUD, validaciones 400, cupo 409 y middleware de errores. El enunciado está en <code>enunciados/fase-3.md</code>.</p></div><div class="mision-item" data-resultado><span class="component-label">Cómo sabemos que quedó</span><p><code>npm test</code> muestra los ejercicios 01 a 15 en ✅ y cada <code>git push</code> actualiza la nota en el mismo Pull Request.</p></div></div></div>
+            <div class="autoevaluacion"><span class="component-label">¿Ya puedo…?</span><ul><li><label><input type="checkbox"><span>Explicar cómo se relacionan <code>Servicio</code> y <code>Cita</code>, señalar la llave foránea y decir por qué la cita guarda <code>servicioId</code>.</span></label></li><li><label><input type="checkbox"><span>Construir la persistencia de Agendia con Prisma y comprobar que una cita sobrevive a un reinicio.</span></label></li><li><label><input type="checkbox"><span>Verificar en Postman el 400 de un dato faltante, el 404 de un id inexistente y el 409 de dos citas cruzadas.</span></label></li></ul></div>
+          </div>
+        </section>
+
+        <section class="section view" id="glosario" data-accent="1" data-layout="canvas" data-escena="consulta" hidden>
+          <div class="sec-head"><span class="sec-n">Consultar</span><h2 class="sec-t">Glosario de la clase</h2></div>
+          <div class="body"><dl class="glosario">
+            <div class="glos-item" data-termino="llave-primaria"><dt class="glos-termino">Llave primaria</dt><dd class="glos-tecnica">Columna que identifica cada fila de una tabla sin repetirse; en Agendia, <code>id</code>.</dd><dd class="glos-vida">El número de cédula: dos personas pueden llamarse igual, pero no tener el mismo número.</dd><dd class="glos-donde">Del arreglo a la tabla · schema.prisma</dd></div>
+            <div class="glos-item" data-termino="llave-foranea"><dt class="glos-termino">Llave foránea</dt><dd class="glos-tecnica">Columna que guarda la llave primaria de otra tabla; la base garantiza que apunte a una fila existente. En <code>Cita</code>, <code>servicioId</code>.</dd><dd class="glos-vida">El número de historia clínica anotado en la ficha de una cita médica.</dd><dd class="glos-donde">Del arreglo a la tabla · schema.prisma · migration.sql</dd></div>
+            <div class="glos-item" data-termino="relacion-1-n"><dt class="glos-termino">Relación 1 a N</dt><dd class="glos-tecnica">Una fila se asocia con muchas de otra y cada una de esas con una sola. La llave foránea va en el lado muchos.</dd><dd class="glos-vida">Un groomer atiende muchos perros en el día, pero cada turno es de un solo groomer.</dd><dd class="glos-donde">Del arreglo a la tabla · schema.prisma</dd></div>
+            <div class="glos-item" data-termino="orm"><dt class="glos-termino">ORM</dt><dd class="glos-tecnica">Librería que traduce entre objetos de un lenguaje y filas de una base relacional, y genera SQL.</dd><dd class="glos-vida">Un traductor en una reunión entre dos personas que hablan idiomas distintos.</dd><dd class="glos-donde">Del arreglo a la tabla · Prisma entra al proyecto</dd></div>
+            <div class="glos-item" data-termino="schema-prisma"><dt class="glos-termino">Schema de Prisma</dt><dd class="glos-tecnica">Archivo que describe modelos, campos, tipos, relaciones y el generador del cliente.</dd><dd class="glos-vida">El plano de una casa antes de construirla.</dd><dd class="glos-donde">Las tablas de Agendia</dd></div>
+            <div class="glos-item" data-termino="enum"><dt class="glos-termino">Enum</dt><dd class="glos-tecnica">Tipo con una lista cerrada de valores permitidos; PostgreSQL lo crea con <code>CREATE TYPE … AS ENUM</code>.</dd><dd class="glos-vida">Las opciones de un formulario de selección.</dd><dd class="glos-donde">schema.prisma · citas.service.js</dd></div>
+            <div class="glos-item" data-termino="migracion"><dt class="glos-termino">Migración</dt><dd class="glos-tecnica">Archivo SQL que lleva la base de un estado al siguiente; se guarda y aplica una vez.</dd><dd class="glos-vida">Los planos numerados de cada remodelación de una casa.</dd><dd class="glos-donde">La primera migración</dd></div>
+            <div class="glos-item" data-termino="seed"><dt class="glos-termino">Seed</dt><dd class="glos-tecnica">Programa que carga datos iniciales, configurado para correr con <code>npx prisma db seed</code>.</dd><dd class="glos-vida">Surtir la vitrina de una tienda el día de la inauguración.</dd><dd class="glos-donde">El catálogo nace en la base</dd></div>
+            <div class="glos-item" data-termino="variable-entorno"><dt class="glos-termino">Variable de entorno</dt><dd class="glos-tecnica">Par nombre-valor que el sistema entrega a un programa; Node las expone en <code>process.env</code>.</dd><dd class="glos-vida">La clave del wifi pegada dentro del cajón y no en la puerta.</dd><dd class="glos-donde">Prisma entra al proyecto · prisma.js</dd></div>
+            <div class="glos-item" data-termino="promesa"><dt class="glos-termino">Promesa (async/await)</dt><dd class="glos-tecnica">Objeto que representa un resultado que todavía no existe; <code>await</code> espera a que se cumpla.</dd><dd class="glos-vida">El turno de la panadería: no es el pan, sino la garantía de que te lo entregan.</dd><dd class="glos-donde">El catálogo sale de la base</dd></div>
+            <div class="glos-item" data-termino="middleware-errores"><dt class="glos-termino">Middleware de errores</dt><dd class="glos-tecnica">Función de Express con cuatro parámetros registrada al final, que recibe los errores y responde.</dd><dd class="glos-vida">La oficina de atención al cliente de un almacén.</dd><dd class="glos-donde">Errores en un solo lugar</dd></div>
+            <div class="glos-item" data-termino="400"><dt class="glos-termino">400 Bad Request</dt><dd class="glos-tecnica">La petición del cliente está mal formada o trae datos inválidos.</dd><dd class="glos-vida">Un formulario devuelto en la ventanilla porque le falta la firma.</dd><dd class="glos-donde">validaciones.js · citas.service.js</dd></div>
+            <div class="glos-item" data-termino="409"><dt class="glos-termino">409 Conflict</dt><dd class="glos-tecnica">La petición es válida, pero choca con el estado actual del recurso.</dd><dd class="glos-vida">Pedir la silla de Dana cuando ya está ocupada hasta las 4:30.</dd><dd class="glos-donde">La regla de Valentina · CRUD del catálogo</dd></div>
+          </dl></div>
+        </section>
+
+        <section class="section view" id="documentacion" data-accent="1" data-layout="canvas" data-escena="consulta" hidden>
+          <div class="sec-head"><span class="sec-n">Consultar</span><h2 class="sec-t">Documentación para profundizar</h2></div>
+          <div class="body"><ul class="docs">
+            <li><div class="doc-meta"><span class="doc-fuente">Prisma ORM 7</span><span class="doc-tipo">Documentación oficial</span><span class="doc-idioma">Inglés</span></div><a class="doc-titulo" href="https://www.prisma.io/docs/orm/v7/prisma-schema/data-model/relations/one-to-many-relations" target="_blank" rel="noopener">Relaciones uno a muchos</a><p class="doc-que-leer">Lee el primer ejemplo (<code>User</code> y <code>Post</code>) y compáralo con <code>Servicio</code> y <code>Cita</code>: encuentra la llave foránea y el campo de lista.</p></li>
+            <li><div class="doc-meta"><span class="doc-fuente">Express.js</span><span class="doc-tipo">Guía oficial 5.x</span><span class="doc-idioma">Inglés</span></div><a class="doc-titulo" href="https://expressjs.com/en/5x/guide/error-handling/" target="_blank" rel="noopener">Manejo de errores</a><p class="doc-que-leer">Lee las partes sobre funciones <code>async</code> que lanzan errores y manejadores con cuatro argumentos.</p></li>
+            <li><div class="doc-meta"><span class="doc-fuente">Fireship · YouTube</span><span class="doc-tipo">Video</span><span class="doc-idioma">Inglés</span></div><a class="doc-titulo" href="https://www.youtube.com/watch?v=rLRIB6AF2Dg" target="_blank" rel="noopener">Prisma in 100 Seconds</a><p class="doc-que-leer">Míralo completo para tener el mapa general: schema, migración y cliente.</p></li>
+            <li><div class="doc-meta"><span class="doc-fuente">Fazt Code · YouTube</span><span class="doc-tipo">Video</span><span class="doc-idioma">Español</span></div><a class="doc-titulo" href="https://www.youtube.com/watch?v=ESShhQmBjjY" target="_blank" rel="noopener">Nodejs y Prisma ORM REST API</a><p class="doc-que-leer">Mira el modelo y las consultas <code>findMany</code>, <code>findUnique</code>, <code>create</code>, <code>update</code> y <code>delete</code>. Para instalar, sigue esta guía.</p></li>
+            <li><div class="doc-meta"><span class="doc-fuente">SQLBolt</span><span class="doc-tipo">Práctica interactiva</span><span class="doc-idioma">Inglés</span></div><a class="doc-titulo" href="https://sqlbolt.com/" target="_blank" rel="noopener">Lecciones de SQL</a><p class="doc-que-leer">Resuelve la lección 6 sobre JOIN y la 16 sobre crear tablas: verás en SQL lo que Prisma escribe por ti.</p></li>
+          </ul><p class="doc-foot">© 2026 Ana Alvarado · Educadora Tech &amp; Desarrolladora Full Stack · Todos los derechos reservados · linkedin.com/in/ana-alvarado-instructora-full-stack</p></div>
+        </section>
+      </div>
+
+      <nav class="view-controls" id="viewControls" aria-label="Navegación entre secciones"><button class="view-btn" id="prevView" type="button" aria-label="Sección anterior">←</button><span class="view-position" id="viewPosition" aria-live="polite">Portada</span><button class="view-btn" id="nextView" type="button" aria-label="Sección siguiente">→</button></nav>
+    </main>
+  </div>
+  <div class="watermark" aria-hidden="true">© 2026 ANA ALVARADO</div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+  <script src="anaclase-v12.js"></script>
+</body>
+</html>
